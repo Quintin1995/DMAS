@@ -7,7 +7,7 @@ def generate_phonebook (phonebook_type, amount_agents):
     if phonebook_type == PhonebookType.ALL:
         for agent_idx in range (amount_agents):
             phonebook.append(list())
-            phonebook.append(list(range(amount_agents)))
+            phonebook[agent_idx] = list(range(amount_agents))
         
             # Remove ourselves from the list
             if agent_idx in phonebook:

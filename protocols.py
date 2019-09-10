@@ -14,7 +14,11 @@ class Protocols(Enum):
 # ANY
 def choose_callers_any(amount_agents, phonebook):
     caller = random.choice(range(amount_agents))
-    receiver = random.choice(range(amount_agents))
-    while (receiver == caller):
-        receiver = random.choice(range(amount_agents))
+    
+    # Determine who this agent can call
+    eligible_receivers = phonebook[caller]
+
+    # Self is already not in phonebook, so can safely call first choice
+    receiver = random.choice(eligible_receivers)
+
     return (caller, receiver)
