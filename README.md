@@ -30,11 +30,23 @@ Date: Friday 06-09-2019
   - CO
   - TOK
   - SPIDER
- * Generate Graphs
- * GUI?
- * Add and Remove Agents
- * Lying Agents? Accidentally given different information.
- * Stress Test
- * Statistics Class
-  -This class runs X amount of experiments and gathers results and makes nice plots.
+  
+* Agents has:
+    - name
+    - list of phone numbers
+    - list of secrets
+    - liar type    (agent type)  (each liar type has a certain percentage of lying.)
+
+* Liar Types:
+    - Bluffer
+    - Saboteur
+    - etc...
+    
+* Generate Graphs (GUI)
+* GUI
+* Stress Test
+    - How many agents can the program support?
+    - How many secrets can the program support?
+* Statistics Class
+  - This class runs X amount of experiments and gathers results and makes nice plots.
   
