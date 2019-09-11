@@ -6,10 +6,9 @@ from protocols import Protocols
 from phonebook import PhonebookType
 from model import Model
 
-class LiarType (Enum):
-    BLUFFER     = 1
-    SABOTEUR    = 2
-
+"""
+Experiment properties
+"""
 AMOUNT_AGENTS   = 3
 MAX_SECRET      = 3
 TRANSFER_CHANCE = 100
@@ -17,12 +16,15 @@ PROTOCOL        = Protocols.ANY
 ITERATIONS      = 60
 PHONEBOOKTYPE   = PhonebookType.ALL
 
+# Create a new instance of the model
 gossip_model = Model(AMOUNT_AGENTS, MAX_SECRET, TRANSFER_CHANCE, PROTOCOL, PHONEBOOKTYPE)
 
-# Main loop
+# [!] Main loop start
 for iteration in range(ITERATIONS):
     gossip_model.next_call()
+# [!] Main loop end
 
+# Everything below here just prints the outcome.
 for target_idx in range (AMOUNT_AGENTS):
     for agent_idx in range (AMOUNT_AGENTS):
         print ("Agent {} thinks agent {} has secret #{}".format(agent_idx, target_idx, gossip_model.get_secret_value(agent_idx, target_idx)))

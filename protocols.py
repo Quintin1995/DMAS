@@ -1,17 +1,21 @@
-"""
-File defining protocols for caller / receiver selection.
-"""
-
 from enum import Enum
 import random
 
-# Define protocols
+"""
+Protocol types for caller / receiver selection.
+
+TYPES:
+- LNS (Call someone new)
+- ANY (Call anyone)
+"""
 class Protocols(Enum):
     LNS         = 1
     NOC         = 2
     ANY         = 3
 
-# ANY
+"""
+Function that can choose the callers for a new call based on the type of protocol given.
+"""
 def choose_callers(amount_agents, phonebook, protocol):
 
     if protocol == Protocols.ANY:
