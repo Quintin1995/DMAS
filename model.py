@@ -38,9 +38,8 @@ class Model:
         self.phonebook = phonebook.generate_phonebook(self.phonebook_type, self.amount_agents)
             
     def next_call (self):
-        if self.protocol == Protocols.ANY:
-            caller, receiver = protocols.choose_callers_any(self.amount_agents, self.phonebook)
-            self.call(caller, receiver)
+        caller, receiver = protocols.choose_callers(self.amount_agents, self.phonebook, self.protocol)
+        self.call(caller, receiver)
 
     def call (self, caller, receiver):
         self.transfer_secrets(caller, receiver)
