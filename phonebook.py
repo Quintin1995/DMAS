@@ -10,6 +10,6 @@ def generate_phonebook (phonebook_type, amount_agents):
             phonebook[agent_idx] = list(range(amount_agents))
         
             # Remove ourselves from the list
-            if agent_idx in phonebook:
-                phonebook.remove(agent_idx)
+            if agent_idx in phonebook[agent_idx]:
+                phonebook[agent_idx].remove(agent_idx)
     return phonebook

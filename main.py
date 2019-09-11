@@ -10,8 +10,8 @@ class LiarType (Enum):
     BLUFFER     = 1
     SABOTEUR    = 2
 
-AMOUNT_AGENTS   = 22
-MAX_SECRET      = 22
+AMOUNT_AGENTS   = 3
+MAX_SECRET      = 3
 TRANSFER_CHANCE = 100
 PROTOCOL        = Protocols.ANY
 ITERATIONS      = 60
@@ -30,3 +30,4 @@ for target_idx in range (AMOUNT_AGENTS):
     agent_secret = gossip_model.get_agent_secret(target_idx)
     print ("Agent {} has secret #{}".format(target_idx, agent_secret))
     print ()
+print (gossip_model.call_log)
