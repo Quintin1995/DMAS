@@ -1,4 +1,4 @@
-from protocols import Protocols
+from protocols import Protocols, NoPossibleCallersError
 from phonebook import PhonebookType
 import phonebook
 import protocols
@@ -58,9 +58,13 @@ class Model:
     according to each agents' phonebook, and the rules of the protocol.
     """        
     def next_call (self):
-        caller, receiver = protocols.choose_callers(self.amount_agents, self.phonebook, self.protocol)
-        self.call(caller, receiver)
-
+        try:
+            caller, receiver = protocols.choose_callers(self.amount_agents, self.phonebook, self.protocol)
+        except NoPossibleCallersError:
+            print ("[W] No agents are eligible to make any calls.")
+            raise
+        else:
+            self.call(caller, receiver)
     """
     Performs the actual call when the caller and receiver have been determined.
     Transfer secrets between the agents, and log the call.
@@ -116,3 +120,14 @@ class Model:
         for agent_idx in range (self.amount_agents):
             agent_secret = self.get_agent_secret(agent_idx)
             print ("{} has {}".format(agent_idx, agent_secret))
+
+    """
+    'Main' function of the model, runs given amount of iterations.
+    """
+    def do_iterations (self, iterations):
+        for iteration in range (iterations):
+            try: 
+                self.next_call()
+            except NoPossibleCallersError:
+                print ("Ended execution after {} iterations, no more calls possible.".format(iteration))
+                break

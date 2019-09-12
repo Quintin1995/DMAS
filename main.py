@@ -9,19 +9,18 @@ from model import Model
 """
 Experiment properties
 """
-AMOUNT_AGENTS   = 3
+AMOUNT_AGENTS   = 10
 MAX_SECRET      = 3
 TRANSFER_CHANCE = 100
-PROTOCOL        = Protocols.ANY
-ITERATIONS      = 60
+PROTOCOL        = Protocols.CO
+ITERATIONS      = 600
 PHONEBOOKTYPE   = PhonebookType.ALL
 
 # Create a new instance of the model
 gossip_model = Model(AMOUNT_AGENTS, MAX_SECRET, TRANSFER_CHANCE, PROTOCOL, PHONEBOOKTYPE)
 
 # [!] Main loop start
-for iteration in range(ITERATIONS):
-    gossip_model.next_call()
+gossip_model.do_iterations(ITERATIONS)
 # [!] Main loop end
 
 # Everything below here just prints the outcome.
