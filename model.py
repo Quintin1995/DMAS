@@ -59,7 +59,7 @@ class Model:
     """        
     def next_call (self):
         try:
-            caller, receiver = protocols.choose_callers(self.amount_agents, self.phonebook, self.protocol)
+            caller, receiver = protocols.choose_callers(self.amount_agents, self.phonebook, self.call_log, self.protocol)
         except NoPossibleCallersError:
             print ("[W] No agents are eligible to make any calls.")
             raise

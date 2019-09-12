@@ -11,6 +11,8 @@ TYPES:
 class Protocols(Enum):
     ANY         = 1
     CO          = 2
+    TOK         = 3
+    SPI         = 4
 
 """
 Exception type that is raised when there are no more callers left.
@@ -22,17 +24,34 @@ class NoPossibleCallersError (Exception):
 """
 Function that can choose the callers for a new call based on the type of protocol given.
 """
-def choose_callers(amount_agents, phonebook, protocol):
+def choose_callers(amount_agents, phonebook, call_log, protocol):
+    # Find all agents that have other agents in their phonebook
+    possible_callers = [agent for agent in range (amount_agents) if len(phonebook[agent]) > 0]
+
     # Call anyone
     if protocol == Protocols.ANY:
-        # Pick anyone from the range of agents
-        possible_callers = range (amount_agents)
+        # The list of possible callers is anyone in the phonebook 
+        pass
 
     # Call once
-    if protocol == Protocols.CO:
+    elif protocol == Protocols.CO:
         # Pick someone that still has someone in their phonebook
-        possible_callers = [agent for agent in range(amount_agents) if len(phonebook[agent]) > 0]
-    
+        # For the call once protocol, the recipient is removed from the phonebook 
+        # Therefore, no additional constraints need to be made.
+        pass
+        
+    # Token
+    elif protocol == Protocols.TOK:
+        # From all agents that have someone in their phonebook, remove all the 
+        # agents for which their last call was FROM them
+        possible_callers = [agent for agent in possible_callers if last_call_direction(agent, call_log) != CallDirection.FROM]
+
+    # SPIder in the web
+    elif protocol == Protocols.SPI:
+        # From all agents that have someone in their phonebook, remove all the 
+        # agents for which their last call was TO them
+        possible_callers = [agent for agent in possible_callers if last_call_direction(agent, call_log) != CallDirection.TO]
+
     if len(possible_callers) < 1:
         raise NoPossibleCallersError
 
@@ -49,7 +68,6 @@ def choose_callers(amount_agents, phonebook, protocol):
     update_phonebook(caller, receiver, phonebook, protocol)
 
     return (caller, receiver)
-
 """
 Update the phonebook after caller and receiver of a new call are known.
 E.g. if caller cannot call same agent again, remove the receiver from the caller's phonebook.
@@ -62,3 +80,40 @@ def update_phonebook(caller, receiver, phonebook, protocol):
     # In call once, we remove the receiver from the caller's phonebook
     elif protocol == Protocols.CO:
         phonebook[caller].remove(receiver)
+
+    # No changes need to be made to the phonebook based on an agents call
+    # The callable agents are determined based on the models call log.
+    elif protocol == Protocols.TOK:
+        pass
+
+    # No changes need to be made to the phonebook based on an agents call
+    # The callable agents are determined based on the models call log.
+    elif protocol == Protocols.SPI:
+        pass
+
+"""
+An enum that signifies the direction of a call.
+NO_CALLS means no calls were found in the call log.
+FROM     means that the retrieved call was FROM the agent.
+TO       means that the retrieved call was TO the agent.
+"""
+class CallDirection (Enum):
+    NO_CALLS    = 1
+    FROM        = 2
+    TO          = 3
+
+"""
+Returns the direction of the last call involving given agent.
+"""
+def last_call_direction (agent_idx, call_log):
+    # Iterate the call log in reverse order
+    for caller, receiver in reversed(call_log):
+        # Find first occurence of agent
+        if caller == agent_idx:
+            return CallDirection.FROM
+        
+        if receiver == agent_idx:
+            return CallDirection.TO
+    
+    # If we traversed the whole list and did not find the agent, return no calls
+    return CallDirection.NO_CALLS

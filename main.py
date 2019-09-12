@@ -12,7 +12,7 @@ Experiment properties
 AMOUNT_AGENTS   = 10
 MAX_SECRET      = 3
 TRANSFER_CHANCE = 100
-PROTOCOL        = Protocols.CO
+PROTOCOL        = Protocols.SPI
 ITERATIONS      = 600
 PHONEBOOKTYPE   = PhonebookType.ALL
 
