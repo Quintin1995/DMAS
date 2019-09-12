@@ -13,6 +13,7 @@ class Protocols(Enum):
     CO          = 2
     TOK         = 3
     SPI         = 4
+    LNS         = 5
 
 """
 Exception type that is raised when there are no more callers left.
@@ -24,7 +25,13 @@ class NoPossibleCallersError (Exception):
 """
 Function that can choose the callers for a new call based on the type of protocol given.
 """
-def choose_callers(amount_agents, phonebook, call_log, protocol):
+def choose_callers(model):
+    amount_agents = model.amount_agents
+    phonebook = model.phonebook
+    call_log  = model.call_log
+    protocol  = model.protocol
+    secrets   = model.secrets
+    
     # Find all agents that have other agents in their phonebook
     possible_callers = [agent for agent in range (amount_agents) if len(phonebook[agent]) > 0]
 
@@ -52,6 +59,19 @@ def choose_callers(amount_agents, phonebook, call_log, protocol):
         # agents for which their last call was TO them
         possible_callers = [agent for agent in possible_callers if last_call_direction(agent, call_log) != CallDirection.TO]
 
+    elif protocol == Protocols.LNS:
+        eligible_receivers_lns = list()
+        for potential_caller in range(amount_agents):
+            eligible_receivers_lns.append(phonebook[potential_caller].copy())
+            if potential_caller not in possible_callers:
+                continue
+            for potential_receiver in phonebook[potential_caller]:
+                if model.get_secret_value(potential_caller, potential_receiver) == model.get_agent_secret(potential_receiver):
+                    eligible_receivers_lns[potential_caller].remove(potential_receiver)
+
+        possible_callers = [agent for agent in possible_callers if len(eligible_receivers_lns[agent]) > 0]
+
+
     if len(possible_callers) < 1:
         raise NoPossibleCallersError
 
@@ -60,6 +80,9 @@ def choose_callers(amount_agents, phonebook, call_log, protocol):
 
     # Determine who this agent can call
     eligible_receivers = phonebook[caller]
+
+    if protocol == Protocols.LNS:
+        eligible_receivers = eligible_receivers_lns[caller]
 
     # Self is already not in phonebook, so can safely call first choice
     receiver = random.choice(eligible_receivers)
