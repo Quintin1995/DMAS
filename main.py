@@ -13,7 +13,7 @@ AMOUNT_AGENTS   = 10
 MAX_SECRET      = 3
 TRANSFER_CHANCE = 100
 PROTOCOL        = Protocols.LNS
-ITERATIONS      = 600
+ITERATIONS      = 2000
 PHONEBOOKTYPE   = PhonebookType.ALL
 
 # Create a new instance of the model
@@ -32,3 +32,4 @@ for target_idx in range (AMOUNT_AGENTS):
     print ("Agent {} has secret #{}".format(target_idx, agent_secret))
     print ()
 print (gossip_model.call_log)
+print (len(gossip_model.call_log))

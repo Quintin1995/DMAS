@@ -4,6 +4,7 @@ import phonebook
 import protocols
 import random
 from enum import Enum
+from copy import deepcopy
 
 class Model:
     """
@@ -70,7 +71,8 @@ class Model:
     Transfer secrets between the agents, and log the call.
     """
     def call (self, caller, receiver):
-        self.transfer_secrets(caller, receiver)
+        backup_receiver = deepcopy(receiver)
+        self.transfer_secrets(caller, backup_receiver)
         self.transfer_secrets(receiver, caller)
         self.call_log.append(tuple((caller, receiver)))
 
@@ -120,12 +122,29 @@ class Model:
         for agent_idx in range (self.amount_agents):
             agent_secret = self.get_agent_secret(agent_idx)
             print ("{} has {}".format(agent_idx, agent_secret))
+    """
+    Returns true if an agent is an expert, and false if he is not.
+    """
+    def is_expert (self, agent_idx):
+        for secret_idx in range (self.amount_agents):
+            if self.get_agent_secret(secret_idx) != self.get_secret_value(agent_idx, secret_idx):
+                return False
+        return True
+
+    """
+    Returns a list comprehension of all the agents that are experts in the model
+    """
+    def get_experts (self):
+        return [agent_idx for agent_idx in range (self.amount_agents) if self.is_expert(agent_idx)]
 
     """
     'Main' function of the model, runs given amount of iterations.
     """
     def do_iterations (self, iterations):
         for iteration in range (iterations):
+            if len(self.get_experts()) == self.amount_agents:
+                print("Everybody knows everything! Succes!")
+                break
             try: 
                 self.next_call()
             except NoPossibleCallersError:
