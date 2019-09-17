@@ -121,6 +121,15 @@ class Model:
             agent_secret = self.get_agent_secret(agent_idx)
             print ("{} has {}".format(agent_idx, agent_secret))
 
+    def is_expert (self, agent_idx):
+        for secret_idx in range (self.amount_agents):
+            if self.get_agent_secret(secret_idx) != self.get_secret_value(agent_idx, secret_idx):
+                return False
+        return True
+
+    def get_experts (self):
+        return [agent_idx for agent_idx in range (self.amount_agents) if self.is_expert(agent_idx)]
+
     """
     'Main' function of the model, runs given amount of iterations.
     """

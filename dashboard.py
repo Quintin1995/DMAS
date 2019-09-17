@@ -50,6 +50,10 @@ class UserInterface:
         self.canvas.draw ()
 
     def update_network (self):
+        if (len(self.model.call_log) > 0):
+            last_call = self.model.call_log[-1]
+            self.network.set_selected_call(last_call)
+        self.network.set_experts(self.model.get_experts())
         self.network.update_graph()
 
     def update_stats (self):
@@ -73,15 +77,36 @@ class GossipGraph:
         self.model = model
         self.graph = nx.Graph()
         self.graph.add_nodes_from(range(self.model.amount_agents))
+        self.selected_nodes = list()
+        self.selected_edge  = list()
+        self.expert_nodes   = list()
 
     def update_graph(self):
         self.axis.clear()
         self.graph.add_edges_from(self.model.call_log)
-        nx.draw_networkx(self.graph, pos=nx.circular_layout(self.graph), arrows=True, ax=self.axis)
+        nx.draw_networkx(self.graph, pos=nx.circular_layout(self.graph), edge_color='#000000', arrows=True, ax=self.axis)
 
+        # Redraw selected nodes
+        nx.draw_networkx_nodes(self.graph, nodelist=self.expert_nodes, node_color='#00FF00', pos=nx.circular_layout(self.graph), ax=self.axis)
+        nx.draw_networkx_nodes(self.graph, nodelist=self.selected_nodes, node_color='#F0F0F0', pos=nx.circular_layout(self.graph), ax=self.axis)
+        nx.draw_networkx_edges(self.graph, edgelist=self.selected_edge, edge_color='#0000FF', pos=nx.circular_layout(self.graph), ax=self.axis)
+        
     def get_figure (self):
         figure = plt.figure(figsize=(5,4))
         self.axis = figure.add_subplot(111)
+
         nx.draw_networkx(self.graph, pos=nx.circular_layout(self.graph), ax=self.axis)
+        
         plt.axis('off')
         return figure
+    
+    def set_selected_call(self, call):
+        self.selected_nodes.clear ()
+        self.selected_edge.clear ()
+        caller, receiver = call
+        self.selected_nodes.append(caller)
+        self.selected_nodes.append(receiver)
+        self.selected_edge.append(call)
+    
+    def set_experts (self, experts):
+        self.expert_nodes = experts
