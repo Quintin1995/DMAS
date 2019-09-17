@@ -79,6 +79,8 @@ class Model:
     E.g.: get_secret_value (1, 2) obtains what agent 1 thinks agent 2's secret is.
     """
     def get_secret_value (self, agent_idx, target_idx):
+        if not self.agent_has_information(agent_idx, target_idx):
+            return -1
         agent_knowledge = self.secrets[agent_idx][target_idx]
         highest_secrets = [idx for idx, s in enumerate(agent_knowledge) if s == max(agent_knowledge)]
         return random.choice(highest_secrets)
@@ -121,12 +123,18 @@ class Model:
             agent_secret = self.get_agent_secret(agent_idx)
             print ("{} has {}".format(agent_idx, agent_secret))
 
+    """
+    Returns true if an agent is an expert, and false if he is not.
+    """
     def is_expert (self, agent_idx):
         for secret_idx in range (self.amount_agents):
             if self.get_agent_secret(secret_idx) != self.get_secret_value(agent_idx, secret_idx):
                 return False
         return True
 
+    """
+    Returns a list comprehension of all the agents that are experts in the model
+    """
     def get_experts (self):
         return [agent_idx for agent_idx in range (self.amount_agents) if self.is_expert(agent_idx)]
 
