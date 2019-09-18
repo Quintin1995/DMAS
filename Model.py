@@ -4,6 +4,7 @@ import phonebook
 import protocols
 import random
 from enum import Enum
+import networkx as nx
 from copy import deepcopy
 
 class State(Enum):
@@ -30,6 +31,9 @@ class Model:
         self.call_log           = list()
         #states: RUN, DONE, NO_CALLS
         self.state              = State.RUN
+        self.graph              = nx.Graph()
+        self.temp_edges         = [(1,2), (3,2), (3,1)]
+        self.graph.add_edges_from(self.temp_edges)
 
     """
     Initializes the global list of secrets.
