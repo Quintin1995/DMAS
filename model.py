@@ -23,6 +23,7 @@ class Model:
         self.phonebook_type     = phonebooktype
         self.initialize_phonebook()
         self.call_log           = list()
+        self.finish               = False
 
     """
     Initializes the global list of secrets.
@@ -145,7 +146,7 @@ class Model:
     def do_iterations (self, iterations):
         for iteration in range (iterations):
             if len(self.get_experts()) == self.amount_agents:
-                print("Everybody knows everything! Succes!")
+                self.finish = True
                 break
             try: 
                 self.next_call()
