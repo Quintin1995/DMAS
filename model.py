@@ -120,9 +120,17 @@ class Model:
             # Agents know their own secret
             if (target_agent == receiver):
                 continue
-            if (self.agent_has_information(sender, target_agent)):
+            elif (self.agent_has_information(sender, target_agent)):
                 if (random.randint(0, 99) < self.transfer_chance):
-                    self.secrets[receiver][target_agent][self.get_secret_value(sender, target_agent)] += 1
+                    secret_knowledge = self.get_secret_value(sender, target_agent)
+                    self.secrets[receiver][target_agent][secret_knowledge] += float(self.secrets[sender][target_agent][secret_knowledge])/sum(self.secrets[sender][target_agent])
+                else:
+                    random_knowledge = random.choice(self.possible_secrets)
+                    # self.secrets[receiver][target_agent][random_knowledge] += 0.1
+                    if self.secrets[receiver][target_agent][random_knowledge] == 0:
+                        self.secrets[receiver][target_agent][random_knowledge] += 0.25
+                    else: 
+                        self.secrets[receiver][target_agent][random_knowledge] += float(self.secrets[sender][target_agent][random_knowledge])/sum(self.secrets[sender][target_agent])
 
     """
     Prints to the console, the actual secrets that agents have.
@@ -153,10 +161,12 @@ class Model:
         for iteration in range (iterations):
             if len(self.get_experts()) == self.amount_agents:
                 self.state = State.DONE
+                print(self.state)
                 break
             try: 
                 self.next_call()
             except NoPossibleCallersError:
                 print ("Ended execution after {} iterations, no more calls possible.".format(iteration))
                 self.state = State.NO_CALLS
+                print(self.state)
                 break
