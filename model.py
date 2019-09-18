@@ -6,6 +6,11 @@ import random
 from enum import Enum
 from copy import deepcopy
 
+class State(Enum):
+    RUN         = 1
+    DONE        = 2
+    NO_CALLS    = 3
+
 class Model:
     """
     GOSSIP MODEL
@@ -23,7 +28,8 @@ class Model:
         self.phonebook_type     = phonebooktype
         self.initialize_phonebook()
         self.call_log           = list()
-        self.finish               = False
+        #states: RUN, DONE, NO_CALLS
+        self.state              = State.RUN
 
     """
     Initializes the global list of secrets.
@@ -146,10 +152,11 @@ class Model:
     def do_iterations (self, iterations):
         for iteration in range (iterations):
             if len(self.get_experts()) == self.amount_agents:
-                self.finish = True
+                self.state = State.DONE
                 break
             try: 
                 self.next_call()
             except NoPossibleCallersError:
                 print ("Ended execution after {} iterations, no more calls possible.".format(iteration))
+                self.state = State.NO_CALLS
                 break
