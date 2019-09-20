@@ -22,3 +22,16 @@ def generate_phonebook (phonebook_type, amount_agents):
             if agent_idx in phonebook[agent_idx]:
                 phonebook[agent_idx].remove(agent_idx)
     return phonebook
+
+
+def convert_phonebook_to_tuples(phonebook):
+    amount_agents = len(phonebook)
+    conv_phonebook = list()
+    for agent_idx in range (amount_agents):
+        # conv_phonebook.append(list())
+        # conv_phonebook[agent_idx] = list(range(amount_agents))
+        for agent2_idx in phonebook[agent_idx]:
+            conv_phonebook.append((agent_idx, agent2_idx))
+
+    return conv_phonebook
+        

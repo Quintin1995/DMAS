@@ -18,15 +18,19 @@ class View():
         self.sidepanel=SidePanel(master)
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
         self.canvas.get_tk_widget().pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
-        self.canvas.draw()
- 
+        # self.canvas.draw()
 
 class SidePanel():
     def __init__(self, root):
         self.sidePanel = Tk.Frame( root )
         self.sidePanel.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=1)
+
         self.drawGraphBut = Tk.Button(self.sidePanel, text="Draw Graph")
         self.drawGraphBut.pack(side="top",fill=Tk.BOTH)
+        
         self.clearButton = Tk.Button(self.sidePanel, text="Clear")
         self.clearButton.pack(side="top",fill=Tk.BOTH)
+
+        self.iterBut = Tk.Button(self.sidePanel, text="1 iteration")
+        self.iterBut.pack(side="bottom",fill=Tk.BOTH)
   

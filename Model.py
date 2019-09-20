@@ -1,6 +1,6 @@
 from protocols import Protocols, NoPossibleCallersError
 from phonebook import PhonebookType
-import phonebook
+from phonebook import *
 import protocols
 import random
 from enum import Enum
@@ -31,9 +31,13 @@ class Model:
         self.call_log           = list()
         #states: RUN, DONE, NO_CALLS
         self.state              = State.RUN
+        self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
         self.graph              = nx.Graph()
-        self.temp_edges         = [(1,2), (3,2), (3,1)]
-        self.graph.add_edges_from(self.temp_edges)
+
+        self.graph.add_edges_from(self.conv_phonebook)
+        # self.graph.
+        # self.temp_edges         = [(1,2), (3,2), (3,1)]
+        # self.graph.add_edges_from(self.temp_edges)
 
     """
     Initializes the global list of secrets.
@@ -63,7 +67,7 @@ class Model:
     """
     def initialize_phonebook (self):
         # If we can call anyone, add everyone to the phonebook
-        self.phonebook = phonebook.generate_phonebook(self.phonebook_type, self.amount_agents)
+        self.phonebook = generate_phonebook(self.phonebook_type, self.amount_agents)
 
     """
     Does one more iteration of the gossip model making a call between two agents,
@@ -164,3 +168,7 @@ class Model:
                 print ("Ended execution after {} iterations, no more calls possible.".format(iteration))
                 self.state = State.NO_CALLS
                 break
+
+
+    def get_last_call(self):
+        return (self.call_log[-1])
