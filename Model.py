@@ -27,8 +27,10 @@ class Model:
         self.secrets = list ()
         self.initialize_secrets()
         self.phonebook_type     = phonebooktype
+        self.phonebook_connectivity = 100
         self.initialize_phonebook()
         self.call_log           = list()
+        self.calls_made         = 0
         #states: RUN, DONE, NO_CALLS
         self.state              = State.RUN
         self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
@@ -67,7 +69,7 @@ class Model:
     """
     def initialize_phonebook (self):
         # If we can call anyone, add everyone to the phonebook
-        self.phonebook = generate_phonebook(self.phonebook_type, self.amount_agents)
+        self.phonebook = generate_phonebook(self.phonebook_type, self.amount_agents, self.phonebook_connectivity)
 
     """
     Does one more iteration of the gossip model making a call between two agents,
@@ -90,6 +92,7 @@ class Model:
         self.transfer_secrets(caller, backup_receiver)
         self.transfer_secrets(receiver, caller)
         self.call_log.append(tuple((caller, receiver)))
+        self.calls_made += 1
 
     """
     Gets the current prediction that an agent has for the secret number of a target agent.

@@ -16,7 +16,7 @@ from View import View, SidePanel
 class Controller():
     def __init__(self):
         self.root = Tk.Tk()
-        self.model=Model(20, 3, 100, Protocols.ANY, PhonebookType.ALL)
+        self.model=Model(20, 3, 100, Protocols.ANY, PhonebookType.TWO_WORLDS)
         self.view=View(self.root)
         self.axis = self.view.fig.add_subplot(111)
         self.view.sidepanel.drawGraphBut.bind("<Button>",self.draw_graph)
