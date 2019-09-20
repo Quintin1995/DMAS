@@ -11,12 +11,22 @@ from phonebook import *
 import networkx as nx
 from View import View, SidePanel
 
+## temp experiment parameters
+AMOUNT_AGENTS   = 10
+MAX_SECRET      = 3
+TRANSFER_CHANCE = 100
+
+## colors for the graph
+EXPERT_COLOR = '#00FF00'
+CALLER_COLOR = '#F0F0F0'
+EDGE_COLOR   = '#00FFFF'
+
  
 
 class Controller():
     def __init__(self):
         self.root = Tk.Tk()
-        self.model=Model(6, 3, 100, Protocols.ANY, PhonebookType.TWO_WORLDS)
+        self.model=Model(AMOUNT_AGENTS, MAX_SECRET, TRANSFER_CHANCE, Protocols.ANY, PhonebookType.TWO_WORLDS)
         self.view=View(self.root)
         self.axis = self.view.fig.add_subplot(111)
         self.view.sidepanel.drawGraphBut.bind("<Button>",self.draw_graph)
@@ -50,15 +60,15 @@ class Controller():
         
         nx.draw_networkx(self.model.graph, pos=nx.circular_layout(self.model.graph), edge_color='#000000', arrows=True, ax=self.axis)
 
+        print(self.model.call_log)
+
         # Redraw selected nodes
-        if(len(self.model.call_log) > 0):
+        last_call = list()
+        last_call.append(self.model.get_last_call())
+        #list().append(self.model.get_last_call())
+        nx.draw_networkx_nodes(self.model.graph, nodelist=self.model.get_experts(), node_color=EXPERT_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
+        nx.draw_networkx_nodes(self.model.graph, nodelist=list(self.model.get_last_call()), node_color=CALLER_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
+        nx.draw_networkx_edges(self.model.graph, edgelist=last_call, edge_color=EDGE_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
 
-            nx.draw_networkx_nodes(self.model.graph, nodelist=self.model.get_experts(), node_color='#00FF00', pos=nx.circular_layout(self.model.graph), ax=self.axis)
-            nx.draw_networkx_nodes(self.model.graph, nodelist=list(self.model.get_last_call()), node_color='#F0F0F0', pos=nx.circular_layout(self.model.graph), ax=self.axis)
-            nx.draw_networkx_edges(self.model.graph, edgelist=list().append(self.model.get_last_call()), edge_color='#0000FF', pos=nx.circular_layout(self.model.graph), ax=self.axis)
-
-        print("doing iteration")
-        nx.draw_networkx(self.model.graph, pos=nx.circular_layout(self.model.graph), ax=self.axis)
         self.view.canvas.draw()
-        print("iets")
         
