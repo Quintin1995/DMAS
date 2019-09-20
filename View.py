@@ -34,3 +34,5 @@ class SidePanel():
         self.iterBut = Tk.Button(self.sidePanel, text="1 iteration")
         self.iterBut.pack(side="bottom",fill=Tk.BOTH)
   
+        self.resetButton = Tk.Button(self.sidePanel, text="Reset model")
+        self.resetButton.pack(side="top",fill=Tk.BOTH)

@@ -16,12 +16,13 @@ from View import View, SidePanel
 class Controller():
     def __init__(self):
         self.root = Tk.Tk()
-        self.model=Model(20, 3, 100, Protocols.ANY, PhonebookType.TWO_WORLDS)
+        self.model=Model(6, 3, 100, Protocols.ANY, PhonebookType.TWO_WORLDS)
         self.view=View(self.root)
         self.axis = self.view.fig.add_subplot(111)
         self.view.sidepanel.drawGraphBut.bind("<Button>",self.draw_graph)
         self.view.sidepanel.clearButton.bind("<Button>",self.clear)
         self.view.sidepanel.iterBut.bind("<Button>", self.Btn_Do_iterations)
+        self.view.sidepanel.resetButton.bind("<Button>", self.reset_model)
 
     def run(self):
         self.root.title("DMAS - GOSSIP PROTOCOLS")
@@ -32,6 +33,8 @@ class Controller():
         self.view.fig.clear()
         self.view.fig.canvas.draw()
   
+    def reset_model(self, event):
+        self.model.reset_model()
   
     def draw_graph(self,event):
         self.view.fig.clear()

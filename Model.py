@@ -171,7 +171,17 @@ class Model:
                 print ("Ended execution after {} iterations, no more calls possible.".format(iteration))
                 self.state = State.NO_CALLS
                 break
-
+    
+    def reset_model (self):
+        self.call_log   = list()
+        self.calls_made = 0
+        self.secrets = list ()
+        self.initialize_secrets()
+        self.initialize_phonebook()
+        self.state              = State.RUN
+        self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
+        self.graph              = nx.Graph()
+        self.graph.add_edges_from(self.conv_phonebook)
 
     def get_last_call(self):
         return (self.call_log[-1])

@@ -8,7 +8,7 @@ TYPES:
 """
 class PhonebookType:
     ALL         = 1     # Everyone is in the phonebook
-    TWO_WORLDS  = 2     
+    TWO_WORLDS  = 2 
 """
 Generate a phonebook based on the given phonebook type.
 """
@@ -51,7 +51,6 @@ def generate_phonebook (phonebook_type, amount_agents, connectivity):
         phonebook[connected_agent_one].append(connected_agent_two)
         phonebook[connected_agent_two].append(connected_agent_one)        
 
-        
     return phonebook
 
 
