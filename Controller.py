@@ -35,13 +35,15 @@ class Controller():
         self.view=View(self.root)
         self.axis = self.view.fig.add_subplot(111)
         self.line_axis = self.view.line_fig.add_subplot(111)
-        self.view.sidepanel.drawGraphBut.bind("<Button>",self.draw_graph)
-        self.view.sidepanel.clearButton.bind("<Button>",self.clear)
+        # self.view.sidepanel.drawGraphBut.bind("<Button>",self.draw_graph)
+        # self.view.sidepanel.clearButton.bind("<Button>",self.clear)
         self.view.sidepanel.iterBut.bind("<Button>", self.Btn_Do_iterations)
+        self.view.sidepanel.iterXBut.bind("<Button>", self.Btn_DoN_iterations)
         self.view.parampanel.resetButton.bind("<Button>", self.reset_model)
         self.selected_model = self.view.parampanel.selected_model
         self.selected_phonebook = self.view.parampanel.selected_phonebook
         self.selected_amount_agents = self.view.parampanel.amount_agents
+        self.selected_amount_iterations = self.view.sidepanel.amount_iterations
 
     def run(self):
         self.root.title("DMAS - GOSSIP PROTOCOLS")
@@ -101,13 +103,18 @@ class Controller():
         self.line_axis.set_xlabel(LINE_PLOT_XLAB)
 
     def Btn_Do_iterations(self, event):
+        self.do_iterations(1)
+
+    def Btn_DoN_iterations(self, event):
+        amount = int(self.selected_amount_iterations.get())
+        self.do_iterations(amount)
+        
+    def do_iterations (self, amount):
         self.axis.clear()
-        self.model.do_iterations(1)
+        self.model.do_iterations(amount)
         self.model.graph.add_edges_from(self.model.call_log)
         
         nx.draw_networkx(self.model.graph, pos=nx.circular_layout(self.model.graph), edge_color='#000000', arrows=True, ax=self.axis)
-
-        print(self.model.call_log)
 
         # Redraw selected nodes
         last_call = list()

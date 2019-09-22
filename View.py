@@ -34,14 +34,24 @@ class SidePanel(Tk.Frame):
         Tk.Frame.__init__(self, master)
         self.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=1)
         
-        self.drawGraphBut = Tk.Button(self, text="Draw Graph")
-        self.drawGraphBut.pack(side="top",fill=Tk.BOTH)
+        # self.drawGraphBut = Tk.Button(self, text="Draw Graph")
+        # self.drawGraphBut.pack(side="top",fill=Tk.BOTH)
         
-        self.clearButton = Tk.Button(self, text="Clear")
-        self.clearButton.pack(side="top",fill=Tk.BOTH)
+        # self.clearButton = Tk.Button(self, text="Clear")
+        # self.clearButton.pack(side="top",fill=Tk.BOTH)
 
-        self.iterBut = Tk.Button(self, text="1 iteration")
-        self.iterBut.pack(side="bottom",fill=Tk.BOTH)
+        self.group_run = Tk.LabelFrame(self, text="Run model", padx=5, pady=5)
+        self.group_run.pack(side="bottom", fill=Tk.BOTH)
+
+        self.iterBut = Tk.Button(self.group_run, text="1 iteration")
+        self.iterBut.pack(side="top",fill=Tk.BOTH)
+        
+        Tk.Label(self.group_run, text="Amount iterations").pack(side="top", fill=Tk.BOTH)
+        self.amount_iterations = Tk.Spinbox(self.group_run, from_=1, to=10000)
+        self.amount_iterations.pack(side="top", fill=Tk.BOTH)
+
+        self.iterXBut = Tk.Button(self.group_run, text="Do N iterations")
+        self.iterXBut.pack(side="top",fill=Tk.BOTH)
 
 
 class ExpPanel(Tk.Frame):
@@ -49,8 +59,8 @@ class ExpPanel(Tk.Frame):
         Tk.Frame.__init__(self, master)
         self.pack(side=Tk.BOTTOM, fill=Tk.BOTH, expand=1)
 
-        self.testBut = Tk.Button(self, text="Test")
-        self.testBut.pack(side="top",fill=Tk.BOTH)
+        # self.testBut = Tk.Button(self, text="Test")
+        # self.testBut.pack(side="top",fill=Tk.BOTH)
 
 class ParamPanel(Tk.Frame):
     def __init__(self, master):
@@ -70,7 +80,7 @@ class ParamPanel(Tk.Frame):
 
 
         Tk.Label(self.group_model, text="Amount agents").pack(side="top", fill=Tk.BOTH)
-        self.amount_agents = Tk.Spinbox(self.group_model, from_=2, to=10000)
+        self.amount_agents = Tk.Spinbox(self.group_model, from_=3, to=100)
         self.amount_agents.pack(side="top", fill=Tk.BOTH)
 
         AVAILABLE_PHONEBOOKS = ["ALL", "TWO WORLDS"]
