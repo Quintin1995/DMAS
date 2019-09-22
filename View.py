@@ -19,6 +19,8 @@ class View(Tk.Frame):
         self.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=1)
         self.sidepanel=SidePanel(self)
 
+        self.leftpanel=LeftPanel(self)
+
         self.exppanel = ExpPanel(self.sidepanel)
         self.parampanel = ParamPanel(self.sidepanel)
 
@@ -28,6 +30,21 @@ class View(Tk.Frame):
         self.line_canvas = FigureCanvasTkAgg(self.line_fig, master=self)
         self.line_canvas.get_tk_widget().pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
         # self.canvas.draw()
+
+class LeftPanel(Tk.Frame):
+    def __init__(self, master):
+        Tk.Frame.__init__(self, master)
+        self.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=1)
+
+        self.group_info = Tk.LabelFrame(self, text="Session information", padx=5, pady=5)
+        self.group_info.pack(side="top", fill=Tk.BOTH)
+        
+        self.model_state_lbl = Tk.Label(self.group_info, text="Protocol running", fg="blue")
+        self.model_state_lbl.pack(side="top", fill=Tk.BOTH)
+
+        self.model_iter_lbl = Tk.Label(self.group_info, text="Calls made: 0")
+        self.model_iter_lbl.pack(side="top", fill=Tk.BOTH)
+
 
 class SidePanel(Tk.Frame):
     def __init__(self, master):

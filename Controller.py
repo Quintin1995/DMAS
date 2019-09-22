@@ -81,6 +81,7 @@ class Controller():
 
         self.model=Model(amount_agents, MAX_SECRET, TRANSFER_CHANCE, protocol, phonebook)
         self.draw_graph(event)
+        self.update_info()
   
     def draw_graph(self,event):
         self.view.fig.clear()
@@ -104,6 +105,30 @@ class Controller():
 
     def Btn_Do_iterations(self, event):
         self.do_iterations(1)
+
+    def update_model_state (self):
+        lbl = self.view.leftpanel.model_state_lbl
+        if self.model.state == State.RUN:
+            val = "State: running"
+            col = "blue"
+        elif self.model.state == State.NO_CALLS:
+            val = "State: failed"
+            col = "red"
+        else:
+            val = "State: success"
+            col = "green"
+        lbl.config(fg=col, text=val)
+        self.view.leftpanel.update()
+
+    def update_iterations (self):
+        lbl = self.view.leftpanel.model_iter_lbl
+        val = self.model.calls_made
+        lbl.config(text="Calls made: " + str(val))
+        self.view.leftpanel.update()
+
+    def update_info (self):
+        self.update_model_state()
+        self.update_iterations()
 
     def Btn_DoN_iterations(self, event):
         amount = int(self.selected_amount_iterations.get())
@@ -130,3 +155,4 @@ class Controller():
         self.set_line_style ()
         self.line_axis.plot(list(range(self.model.calls_made)),self.model.summed_knowledge)
         self.view.line_canvas.draw()
+        self.update_info()
