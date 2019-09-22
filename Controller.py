@@ -10,6 +10,8 @@ from protocols import *
 from phonebook import *
 import networkx as nx
 from View import View, SidePanel
+import matplotlib.style as style
+style.use('seaborn-bright')
 
 ## temp experiment parameters
 AMOUNT_AGENTS   = 10
@@ -21,7 +23,10 @@ EXPERT_COLOR = '#00FF00'
 CALLER_COLOR = '#F0F0F0'
 EDGE_COLOR   = '#00FFFF'
 
- 
+# PLOT TITLES
+LINE_PLOT_TITLE = "Sum of agent knowledge progression"
+LINE_PLOT_YLAB  = "Sum of known agent secrets"
+LINE_PLOT_XLAB  = "Amount of calls made"
 
 class Controller():
     def __init__(self):
@@ -29,6 +34,7 @@ class Controller():
         self.model=Model(AMOUNT_AGENTS, MAX_SECRET, TRANSFER_CHANCE, Protocols.ANY, PhonebookType.TWO_WORLDS)
         self.view=View(self.root)
         self.axis = self.view.fig.add_subplot(111)
+        self.line_axis = self.view.line_fig.add_subplot(111)
         self.view.sidepanel.drawGraphBut.bind("<Button>",self.draw_graph)
         self.view.sidepanel.clearButton.bind("<Button>",self.clear)
         self.view.sidepanel.iterBut.bind("<Button>", self.Btn_Do_iterations)
@@ -42,16 +48,32 @@ class Controller():
     def clear(self,event):
         self.view.fig.clear()
         self.view.fig.canvas.draw()
+        self.view.line_fig.clear()
+        self.view.line_fig.canvas.draw()
   
     def reset_model(self, event):
         self.model.reset_model()
+        self.draw_graph(event)
   
     def draw_graph(self,event):
         self.view.fig.clear()
         self.axis = self.view.fig.add_subplot(111)
         nx.draw_networkx(self.model.graph, pos=nx.circular_layout(self.model.graph), ax=self.axis)
         self.view.fig.canvas.draw()
+        self.draw_line(event)
 
+    def draw_line(self,event):
+        self.view.line_fig.clear()
+        self.line_axis = self.view.line_fig.add_subplot(111)
+        print (self.model.summed_knowledge)
+        self.set_line_style()
+        
+        self.view.line_fig.canvas.draw()
+
+    def set_line_style(self):
+        self.line_axis.set_title(LINE_PLOT_TITLE)
+        self.line_axis.set_ylabel(LINE_PLOT_YLAB)
+        self.line_axis.set_xlabel(LINE_PLOT_XLAB)
 
     def Btn_Do_iterations(self, event):
         self.axis.clear()
@@ -72,3 +94,7 @@ class Controller():
 
         self.view.canvas.draw()
         
+        self.line_axis.clear()
+        self.set_line_style ()
+        self.line_axis.plot(list(range(self.model.calls_made)),self.model.summed_knowledge)
+        self.view.line_canvas.draw()

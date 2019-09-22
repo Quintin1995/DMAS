@@ -35,11 +35,8 @@ class Model:
         self.state              = State.RUN
         self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
         self.graph              = nx.Graph()
-
         self.graph.add_edges_from(self.conv_phonebook)
-        # self.graph.
-        # self.temp_edges         = [(1,2), (3,2), (3,1)]
-        # self.graph.add_edges_from(self.temp_edges)
+        self.summed_knowledge   = list()
 
     """
     Initializes the global list of secrets.
@@ -93,6 +90,7 @@ class Model:
         self.transfer_secrets(receiver, caller)
         self.call_log.append(tuple((caller, receiver)))
         self.calls_made += 1
+        self.summed_knowledge.append(self.get_sum_known_secrets())
 
     """
     Gets the current prediction that an agent has for the secret number of a target agent.
@@ -142,6 +140,7 @@ class Model:
         for agent_idx in range (self.amount_agents):
             agent_secret = self.get_agent_secret(agent_idx)
             print ("{} has {}".format(agent_idx, agent_secret))
+
     """
     Returns true if an agent is an expert, and false if he is not.
     """
@@ -150,6 +149,25 @@ class Model:
             if self.get_agent_secret(secret_idx) != self.get_secret_value(agent_idx, secret_idx):
                 return False
         return True
+
+    """
+    Returns the amount of secrets that an agent correctly knows
+    """
+    def get_amount_known_secrets (self, agent_idx):
+        total = 0
+        for secret_idx in range (self.amount_agents):
+            if self.get_agent_secret(secret_idx) == self.get_secret_value(agent_idx, secret_idx):
+                total += 1
+        return total
+
+    """
+    Returns the SUMMED amount of secrets that the agents correctly know
+    """
+    def get_sum_known_secrets (self):
+        total = 0
+        for agent_idx in range (self.amount_agents):
+            total += self.get_amount_known_secrets(agent_idx)
+        return total
 
     """
     Returns a list comprehension of all the agents that are experts in the model
@@ -182,6 +200,7 @@ class Model:
         self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
         self.graph              = nx.Graph()
         self.graph.add_edges_from(self.conv_phonebook)
+        self.summed_knowledge   = list()
 
     def get_last_call(self):
         return (self.call_log[-1])

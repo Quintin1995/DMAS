@@ -13,6 +13,7 @@ class View(Tk.Frame):
         Tk.Frame.__init__(self, master)
         # self.frame = Tk.Frame(master)
         self.fig = Figure( figsize=(7.5, 4), dpi=80 )
+        self.line_fig = Figure( figsize=(7.5, 4), dpi=80 )
         # self.ax0 = self.fig.add_axes( (0.05, .05, .90, .90), facecolor=(.25,.25,.25), frameon=False)
         # self.ax0 = self.fig
         self.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=1)
@@ -23,6 +24,9 @@ class View(Tk.Frame):
 
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
         self.canvas.get_tk_widget().pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
+
+        self.line_canvas = FigureCanvasTkAgg(self.line_fig, master=self)
+        self.line_canvas.get_tk_widget().pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
         # self.canvas.draw()
 
 class SidePanel(Tk.Frame):
