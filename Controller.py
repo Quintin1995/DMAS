@@ -38,7 +38,10 @@ class Controller():
         self.view.sidepanel.drawGraphBut.bind("<Button>",self.draw_graph)
         self.view.sidepanel.clearButton.bind("<Button>",self.clear)
         self.view.sidepanel.iterBut.bind("<Button>", self.Btn_Do_iterations)
-        self.view.sidepanel.resetButton.bind("<Button>", self.reset_model)
+        self.view.parampanel.resetButton.bind("<Button>", self.reset_model)
+        self.selected_model = self.view.parampanel.selected_model
+        self.selected_phonebook = self.view.parampanel.selected_phonebook
+        self.selected_amount_agents = self.view.parampanel.amount_agents
 
     def run(self):
         self.root.title("DMAS - GOSSIP PROTOCOLS")
@@ -52,7 +55,29 @@ class Controller():
         self.view.line_fig.canvas.draw()
   
     def reset_model(self, event):
-        self.model.reset_model()
+        choice = self.selected_model.get()
+        protocol = Protocols.ANY
+        if choice == 'ANY':
+            protocol = Protocols.ANY
+        elif choice == "LNS":
+            protocol = Protocols.LNS
+        elif choice == "SPI":
+            protocol = Protocols.SPI
+        elif choice == "TOK":
+            protocol = Protocols.TOK
+        elif choice == "CO":
+            protocol = Protocols.CO
+            
+        choice = self.selected_phonebook.get()
+        phonebook = PhonebookType.ALL
+        if choice == 'ALL':
+            phonebook = PhonebookType.ALL
+        elif choice == "TWO WORLDS":
+            phonebook = PhonebookType.TWO_WORLDS
+
+        amount_agents = int(self.selected_amount_agents.get())
+
+        self.model=Model(amount_agents, MAX_SECRET, TRANSFER_CHANCE, protocol, phonebook)
         self.draw_graph(event)
   
     def draw_graph(self,event):

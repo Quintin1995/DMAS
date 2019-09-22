@@ -33,7 +33,7 @@ class SidePanel(Tk.Frame):
     def __init__(self, master):
         Tk.Frame.__init__(self, master)
         self.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=1)
-
+        
         self.drawGraphBut = Tk.Button(self, text="Draw Graph")
         self.drawGraphBut.pack(side="top",fill=Tk.BOTH)
         
@@ -43,8 +43,6 @@ class SidePanel(Tk.Frame):
         self.iterBut = Tk.Button(self, text="1 iteration")
         self.iterBut.pack(side="bottom",fill=Tk.BOTH)
 
-        self.resetButton = Tk.Button(self, text="Reset model")
-        self.resetButton.pack(side="top",fill=Tk.BOTH)
 
 class ExpPanel(Tk.Frame):
     def __init__(self, master):
@@ -59,5 +57,29 @@ class ParamPanel(Tk.Frame):
         Tk.Frame.__init__(self, master)
         self.pack(side=Tk.BOTTOM, fill=Tk.BOTH, expand=1)
 
-        self.testBut = Tk.Button(self, text="Test")
-        self.testBut.pack(side="top",fill=Tk.BOTH)
+        self.group_model = Tk.LabelFrame(self, text="Model parameters", padx=5, pady=5)
+        self.group_model.pack(side="top", fill=Tk.BOTH)
+
+        AVAILABLE_MODELS = ["ANY", "CO", "LNS", "SPI", "TOK"]
+        self.selected_model = Tk.StringVar(self)
+        self.selected_model.set("ANY") # default value
+
+        Tk.Label(self.group_model, text="Protocol").pack(side="top", fill=Tk.BOTH)
+        self.model_selector = Tk.OptionMenu(self.group_model, self.selected_model, *AVAILABLE_MODELS)
+        self.model_selector.pack(side="top", fill=Tk.BOTH)
+
+
+        Tk.Label(self.group_model, text="Amount agents").pack(side="top", fill=Tk.BOTH)
+        self.amount_agents = Tk.Spinbox(self.group_model, from_=2, to=10000)
+        self.amount_agents.pack(side="top", fill=Tk.BOTH)
+
+        AVAILABLE_PHONEBOOKS = ["ALL", "TWO WORLDS"]
+        self.selected_phonebook = Tk.StringVar(self)
+        self.selected_phonebook.set("ALL") # default value
+
+        Tk.Label(self.group_model, text="Phonebook").pack(side="top", fill=Tk.BOTH)
+        self.phonebook_selector = Tk.OptionMenu(self.group_model, self.selected_phonebook, *AVAILABLE_PHONEBOOKS)
+        self.phonebook_selector.pack(side="top", fill=Tk.BOTH)
+
+        self.resetButton = Tk.Button(self.group_model, text="Set model")
+        self.resetButton.pack(side="top",fill=Tk.BOTH)
