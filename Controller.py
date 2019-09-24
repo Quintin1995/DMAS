@@ -22,7 +22,7 @@ TRANSFER_CHANCE = 100
 
 ## colors for the graph
 EXPERT_COLOR = '#0000FF'
-CALLER_COLOR = '#F0F0F0'
+CALLER_COLOR = "cyan" #'#F0F0F0'
 EDGE_COLOR   = '#00FFFF'
 
 # PLOT TITLES
@@ -66,6 +66,7 @@ class Controller():
         self.view.line_fig.canvas.draw()
   
     def reset_model(self, event):
+        self.view.leftpanel.model_call_log_textarea.delete('1.0', Tk.END)
         choice = self.selected_model.get()
         protocol = Protocols.ANY
         if choice == 'ANY':
@@ -151,22 +152,35 @@ class Controller():
         self.do_iterations(amount)
         
     def do_iterations (self, amount):
+        #clear the axes, turn them of and add a legend
         self.axis.clear()
         self.axis.axis('off')
         self.axis.legend(self.legend_styling, ['Little knowledge', 'More knowledge', 'Expert'], loc='upper left', framealpha=0.33)
 
+        #perform main loop
         self.model.do_iterations(amount)
+
+        #update textare of left panel with last element of call log
+        self.view.leftpanel.model_call_log_textarea.insert(Tk.END, (str(self.model.call_log[-1]) + "\n") )
+
+        #update the visualization of the graph with calls
         self.model.graph.add_edges_from(self.model.call_log)
         
+        #set colors of the agents according to their fraction of total possible knowlegde/secrets
         agent_colors = self.get_agent_colors()
         nx.draw_networkx(self.model.graph, pos=nx.circular_layout(self.model.graph), edge_color='#000000', node_color=agent_colors, arrows=True, ax=self.axis)
 
         # Redraw selected nodes
         last_call = list()
         last_call.append(self.model.get_last_call())
-        #list().append(self.model.get_last_call())
+        
+        #set expert color
         nx.draw_networkx_nodes(self.model.graph, nodelist=self.model.get_experts(), node_color=EXPERT_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
+        
+        #set caller colors
         nx.draw_networkx_nodes(self.model.graph, nodelist=list(self.model.get_last_call()), node_color=CALLER_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
+        
+        #set Call color, the edge between callers
         nx.draw_networkx_edges(self.model.graph, edgelist=last_call, edge_color=EDGE_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
 
         self.view.canvas.draw()
