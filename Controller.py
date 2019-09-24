@@ -44,6 +44,7 @@ class Controller():
         self.selected_phonebook = self.view.parampanel.selected_phonebook
         self.selected_amount_agents = self.view.parampanel.amount_agents
         self.selected_amount_iterations = self.view.sidepanel.amount_iterations
+        self.selected_amount_connectivity = self.view.parampanel.amount_connectivity
 
     def run(self):
         self.root.title("DMAS - GOSSIP PROTOCOLS")
@@ -76,10 +77,14 @@ class Controller():
             phonebook = PhonebookType.ALL
         elif choice == "TWO WORLDS":
             phonebook = PhonebookType.TWO_WORLDS
+        elif choice == "RANDOM GRAPH":
+            phonebook = PhonebookType.RAND_GRAPH
 
         amount_agents = int(self.selected_amount_agents.get())
 
         self.model=Model(amount_agents, MAX_SECRET, TRANSFER_CHANCE, protocol, phonebook)
+        self.model.phonebook_connectivity = int(self.selected_amount_connectivity.get())
+        self.model.initialize_phonebook()
         self.draw_graph(event)
         self.update_info()
   
@@ -156,3 +161,4 @@ class Controller():
         self.line_axis.plot(list(range(self.model.calls_made)),self.model.summed_knowledge)
         self.view.line_canvas.draw()
         self.update_info()
+

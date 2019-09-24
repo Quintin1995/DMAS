@@ -100,7 +100,7 @@ class ParamPanel(Tk.Frame):
         self.amount_agents = Tk.Spinbox(self.group_model, from_=3, to=100)
         self.amount_agents.pack(side="top", fill=Tk.BOTH)
 
-        AVAILABLE_PHONEBOOKS = ["ALL", "TWO WORLDS"]
+        AVAILABLE_PHONEBOOKS = ["ALL", "TWO WORLDS", "RANDOM GRAPH"]
         self.selected_phonebook = Tk.StringVar(self)
         self.selected_phonebook.set("ALL") # default value
 
@@ -110,3 +110,8 @@ class ParamPanel(Tk.Frame):
 
         self.resetButton = Tk.Button(self.group_model, text="Set model")
         self.resetButton.pack(side="top",fill=Tk.BOTH)
+
+        Tk.Label(self.group_model, text="Connectivity of Graph %").pack(side="top", fill=Tk.BOTH)
+        self.amount_connectivity = Tk.Spinbox(self.group_model, from_=1, to=100)
+        self.amount_connectivity.pack(side="top", fill=Tk.BOTH)
+        

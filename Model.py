@@ -33,9 +33,9 @@ class Model:
         self.calls_made         = 0
         #states: RUN, DONE, NO_CALLS
         self.state              = State.RUN
-        self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
-        self.graph              = nx.Graph()
-        self.graph.add_edges_from(self.conv_phonebook)
+        # self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
+        # self.graph              = nx.Graph()
+        # self.graph.add_edges_from(self.conv_phonebook)
         self.summed_knowledge   = list()
 
     """
@@ -67,6 +67,9 @@ class Model:
     def initialize_phonebook (self):
         # If we can call anyone, add everyone to the phonebook
         self.phonebook = generate_phonebook(self.phonebook_type, self.amount_agents, self.phonebook_connectivity)
+        self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
+        self.graph              = nx.Graph()
+        self.graph.add_edges_from(self.conv_phonebook)
 
     """
     Does one more iteration of the gossip model making a call between two agents,

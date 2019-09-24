@@ -4,12 +4,24 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        // {
+        //     "name": "Python: Current File",
+        //     "command": "python",
+        //     "type": "python",
+        //     "request": "launch",
+        //     "program": "${file}",
+        //     "console": "integratedTerminal"
+        // }
+
         {
-            "name": "Python: Current File",
+            "name": "Python: main_gui.py",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/main_gui.py",
             "console": "integratedTerminal"
         }
     ]
 }
+
+
+
