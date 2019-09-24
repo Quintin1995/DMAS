@@ -192,9 +192,10 @@ class Controller():
         self.update_info()
 
 
+    #format a the call log to be shown to the user.
     def get_formated_call(self, amount):
+        #take last calls from call log
         calls_list = self.model.call_log[len(self.model.call_log)-amount:len(self.model.call_log)]
-
         formated_call = ""
         for idx, call in enumerate(calls_list):
             a,b = call

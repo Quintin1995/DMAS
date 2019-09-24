@@ -50,7 +50,7 @@ class LeftPanel(Tk.Frame):
         #call log
         self.model_call_log_lbl = Tk.Label(self.group_info, text="Call Log", fg="green")
         self.model_call_log_lbl.pack(side="top", fill=Tk.BOTH)
-        self.model_call_log_textarea = Tk.Text(self.group_info, height=20, width=30)
+        self.model_call_log_textarea = Tk.Text(self.group_info, height=20, width=35)
         self.model_call_log_textarea.pack(side="top", fill=Tk.BOTH)
 
 
