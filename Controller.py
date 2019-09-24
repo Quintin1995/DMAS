@@ -109,7 +109,7 @@ class Controller():
     def draw_line(self,event):
         self.view.line_fig.clear()
         self.line_axis = self.view.line_fig.add_subplot(111)
-        print (self.model.summed_knowledge)
+        # print (self.model.summed_knowledge)
         self.set_line_style()
         
         self.view.line_fig.canvas.draw()

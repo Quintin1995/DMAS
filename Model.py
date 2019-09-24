@@ -31,11 +31,7 @@ class Model:
         self.initialize_phonebook()
         self.call_log           = list()
         self.calls_made         = 0
-        #states: RUN, DONE, NO_CALLS
         self.state              = State.RUN
-        # self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
-        # self.graph              = nx.Graph()
-        # self.graph.add_edges_from(self.conv_phonebook)
         self.summed_knowledge   = list()
 
     """
@@ -79,7 +75,7 @@ class Model:
         try:
             caller, receiver = protocols.choose_callers(self)
         except NoPossibleCallersError:
-            print ("[W] No agents are eligible to make any calls.")
+            # print ("[W] No agents are eligible to make any calls.")
             raise
         else:
             self.call(caller, receiver)
@@ -142,7 +138,7 @@ class Model:
     def print_agent_secrets (self):
         for agent_idx in range (self.amount_agents):
             agent_secret = self.get_agent_secret(agent_idx)
-            print ("{} has {}".format(agent_idx, agent_secret))
+            # print ("{} has {}".format(agent_idx, agent_secret))
 
     """
     Returns true if an agent is an expert, and false if he is not.
@@ -189,7 +185,7 @@ class Model:
             try: 
                 self.next_call()
             except NoPossibleCallersError:
-                print ("Ended execution after {} iterations, no more calls possible.".format(iteration))
+                # print ("Ended execution after {} iterations, no more calls possible.".format(iteration))
                 self.state = State.NO_CALLS
                 break
     
