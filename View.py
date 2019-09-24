@@ -5,6 +5,7 @@ import numpy as np
 from itertools import permutations
 import sys
 import matplotlib.pyplot as plt
+from tkinter import scrolledtext
 import networkx as nx
 
 
@@ -34,14 +35,24 @@ class LeftPanel(Tk.Frame):
         Tk.Frame.__init__(self, master)
         self.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=1)
 
+        #Frame for fields
         self.group_info = Tk.LabelFrame(self, text="Session information", padx=5, pady=5)
         self.group_info.pack(side="top", fill=Tk.BOTH)
         
+        #Protocol status text
         self.model_state_lbl = Tk.Label(self.group_info, text="Protocol running", fg="blue")
         self.model_state_lbl.pack(side="top", fill=Tk.BOTH)
 
+        #amount calls made txt
         self.model_iter_lbl = Tk.Label(self.group_info, text="Calls made: 0")
         self.model_iter_lbl.pack(side="top", fill=Tk.BOTH)
+
+        #call log
+        self.model_call_log_lbl = Tk.Label(self.group_info, text="Call Log", fg="green")
+        self.model_call_log_lbl.pack(side="top", fill=Tk.BOTH)
+        self.model_call_log_textarea = Tk.Text(self.group_info, height=20, width=30)
+        self.model_call_log_textarea.pack(side="top", fill=Tk.BOTH)
+
 
 
 class SidePanel(Tk.Frame):

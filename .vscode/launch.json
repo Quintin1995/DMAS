@@ -14,10 +14,10 @@
         // }
 
         {
-            "name": "Python: main_gui.py",
+            "name": "Python: main.py",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/main_gui.py",
+            "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal"
         }
     ]
