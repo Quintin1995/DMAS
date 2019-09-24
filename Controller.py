@@ -19,7 +19,7 @@ MAX_SECRET      = 3
 TRANSFER_CHANCE = 100
 
 ## colors for the graph
-EXPERT_COLOR = '#00FF00'
+EXPERT_COLOR = '#0000FF'
 CALLER_COLOR = '#F0F0F0'
 EDGE_COLOR   = '#00FFFF'
 
@@ -91,7 +91,7 @@ class Controller():
     def draw_graph(self,event):
         self.view.fig.clear()
         self.axis = self.view.fig.add_subplot(111)
-        nx.draw_networkx(self.model.graph, pos=nx.circular_layout(self.model.graph), ax=self.axis)
+        nx.draw_networkx(self.model.graph, node_color=self.get_agent_colors(), pos=nx.circular_layout(self.model.graph), ax=self.axis)
         self.view.fig.canvas.draw()
         self.draw_line(event)
 
@@ -144,7 +144,8 @@ class Controller():
         self.model.do_iterations(amount)
         self.model.graph.add_edges_from(self.model.call_log)
         
-        nx.draw_networkx(self.model.graph, pos=nx.circular_layout(self.model.graph), edge_color='#000000', arrows=True, ax=self.axis)
+        agent_colors = self.get_agent_colors()
+        nx.draw_networkx(self.model.graph, pos=nx.circular_layout(self.model.graph), edge_color='#000000', node_color=agent_colors, arrows=True, ax=self.axis)
 
         # Redraw selected nodes
         last_call = list()
@@ -162,3 +163,11 @@ class Controller():
         self.view.line_canvas.draw()
         self.update_info()
 
+    def get_agent_color (self, agent_idx):
+        known_secrets  = self.model.get_amount_known_secrets(agent_idx)
+        fraction_known = known_secrets / float(self.model.amount_agents)
+
+        return [1.0 - fraction_known, fraction_known, 0.0]
+        
+    def get_agent_colors (self):
+        return [self.get_agent_color(agent_idx) for agent_idx in range(self.model.amount_agents)]
