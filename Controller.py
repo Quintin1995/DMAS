@@ -161,7 +161,7 @@ class Controller():
         self.model.do_iterations(amount)
 
         #update textare of left panel with last element of call log
-        self.view.leftpanel.model_call_log_textarea.insert(Tk.END, (str(self.model.call_log[-1]) + "\n") )
+        self.view.leftpanel.model_call_log_textarea.insert(Tk.END, self.get_formated_call() )
 
         #update the visualization of the graph with calls
         self.model.graph.add_edges_from(self.model.call_log)
@@ -190,6 +190,12 @@ class Controller():
         self.line_axis.plot(list(range(self.model.calls_made)),self.model.summed_knowledge)
         self.view.line_canvas.draw()
         self.update_info()
+
+
+    def get_formated_call(self):
+        a,b=self.model.call_log[-1]
+        formated_call = "Agent " + str(a) + " called Agent " + str(b) + "\n"
+        return formated_call
 
     def get_agent_color (self, agent_idx):
         known_secrets  = self.model.get_amount_known_secrets(agent_idx)
