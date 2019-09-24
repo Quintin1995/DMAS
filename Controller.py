@@ -11,6 +11,8 @@ from phonebook import *
 import networkx as nx
 from View import View, SidePanel
 import matplotlib.style as style
+from matplotlib.lines import Line2D
+
 style.use('seaborn-bright')
 
 ## temp experiment parameters
@@ -34,9 +36,15 @@ class Controller():
         self.model=Model(AMOUNT_AGENTS, MAX_SECRET, TRANSFER_CHANCE, Protocols.ANY, PhonebookType.TWO_WORLDS)
         self.view=View(self.root)
         self.axis = self.view.fig.add_subplot(111)
+        self.axis.legend(loc='center')
+        self.axis.axis('off')
         self.line_axis = self.view.line_fig.add_subplot(111)
-        # self.view.sidepanel.drawGraphBut.bind("<Button>",self.draw_graph)
-        # self.view.sidepanel.clearButton.bind("<Button>",self.clear)
+        self.legend_styling = [Line2D([0], [0], color='w', markerfacecolor='#FF0000', marker='o', markersize=10, lw=4),
+                        Line2D([0], [0], color='w', markerfacecolor='#00FF00', marker='o', markersize=10, lw=4),
+                        Line2D([0], [0], color='w', markerfacecolor='#0000FF', marker='o', markersize=10, lw=4)]
+
+        self.draw_graph(0)
+
         self.view.sidepanel.iterBut.bind("<Button>", self.Btn_Do_iterations)
         self.view.sidepanel.iterXBut.bind("<Button>", self.Btn_DoN_iterations)
         self.view.parampanel.resetButton.bind("<Button>", self.reset_model)
@@ -92,6 +100,9 @@ class Controller():
         self.view.fig.clear()
         self.axis = self.view.fig.add_subplot(111)
         nx.draw_networkx(self.model.graph, node_color=self.get_agent_colors(), pos=nx.circular_layout(self.model.graph), ax=self.axis)
+        self.axis.axis('off')
+        self.axis.legend(self.legend_styling, ['Little knowledge', 'More knowledge', 'Expert'], loc='upper left', framealpha=0.33)
+
         self.view.fig.canvas.draw()
         self.draw_line(event)
 
@@ -141,6 +152,9 @@ class Controller():
         
     def do_iterations (self, amount):
         self.axis.clear()
+        self.axis.axis('off')
+        self.axis.legend(self.legend_styling, ['Little knowledge', 'More knowledge', 'Expert'], loc='upper left', framealpha=0.33)
+
         self.model.do_iterations(amount)
         self.model.graph.add_edges_from(self.model.call_log)
         
