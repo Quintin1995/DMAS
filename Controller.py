@@ -161,7 +161,7 @@ class Controller():
         self.model.do_iterations(amount)
 
         #update textare of left panel with last element of call log
-        self.view.leftpanel.model_call_log_textarea.insert(Tk.END, self.get_formated_call() )
+        self.view.leftpanel.model_call_log_textarea.insert(Tk.END, self.get_formated_call(amount) )
 
         #update the visualization of the graph with calls
         self.model.graph.add_edges_from(self.model.call_log)
@@ -192,9 +192,13 @@ class Controller():
         self.update_info()
 
 
-    def get_formated_call(self):
-        a,b=self.model.call_log[-1]
-        formated_call = "Agent " + str(a) + " called Agent " + str(b) + "\n"
+    def get_formated_call(self, amount):
+        calls_list = self.model.call_log[len(self.model.call_log)-amount:len(self.model.call_log)]
+
+        formated_call = ""
+        for idx, call in enumerate(calls_list):
+            a,b = call
+            formated_call += "Call " + str(self.model.calls_made - amount + idx + 1) + ": Agent " + str(a) + " calls Agent " + str(b) + "\n"
         return formated_call
 
     def get_agent_color (self, agent_idx):
