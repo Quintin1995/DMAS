@@ -97,10 +97,31 @@ class ParamPanel(Tk.Frame):
         self.model_selector = Tk.OptionMenu(self.group_model, self.selected_model, *AVAILABLE_MODELS)
         self.model_selector.pack(side="top", fill=Tk.BOTH)
 
-
         Tk.Label(self.group_model, text="Amount agents").pack(side="top", fill=Tk.BOTH)
         self.amount_agents = Tk.Spinbox(self.group_model, from_=3, to=100)
+        self.amount_agents.delete(0,"end")
+        self.amount_agents.insert(0,"10")
         self.amount_agents.pack(side="top", fill=Tk.BOTH)
+
+        AVAILABLE_PHONEBOOKS = ["LIE", "MISTAKE"]
+        self.selected_behavior = Tk.StringVar(self)
+        self.selected_behavior.set("LIE") # default value
+
+        Tk.Label(self.group_model, text="Behavior").pack(side="top", fill=Tk.BOTH)
+        self.behavior_selector = Tk.OptionMenu(self.group_model, self.selected_behavior, *AVAILABLE_PHONEBOOKS)
+        self.behavior_selector.pack(side="top", fill=Tk.BOTH)
+
+        Tk.Label(self.group_model, text="Chance of telling the truth in percentage").pack(side="top", fill=Tk.BOTH)
+        self.transfer_chance = Tk.Spinbox(self.group_model, from_=1, to=100)
+        self.transfer_chance.delete(0,"end")
+        self.transfer_chance.insert(0,"100")
+        self.transfer_chance.pack(side="top", fill=Tk.BOTH)
+
+        Tk.Label(self.group_model, text="Strength of a lie in percentage").pack(side="top", fill=Tk.BOTH)
+        self.lie_factor = Tk.Spinbox(self.group_model, from_=0, to=1)
+        self.lie_factor.delete(0,"end")
+        self.lie_factor.insert(0,"25")
+        self.lie_factor.pack(side="top", fill=Tk.BOTH)
 
         AVAILABLE_PHONEBOOKS = ["ALL", "TWO WORLDS", "RANDOM GRAPH", "CUSTOM GRAPH"]
         self.selected_phonebook = Tk.StringVar(self)
@@ -110,11 +131,10 @@ class ParamPanel(Tk.Frame):
         self.phonebook_selector = Tk.OptionMenu(self.group_model, self.selected_phonebook, *AVAILABLE_PHONEBOOKS)
         self.phonebook_selector.pack(side="top", fill=Tk.BOTH)
 
-        self.resetButton = Tk.Button(self.group_model, text="Set model")
-        self.resetButton.pack(side="top",fill=Tk.BOTH)
-
-        Tk.Label(self.group_model, text="Connectivity of the Random Graph in Percents").pack(side="top", fill=Tk.BOTH)
+        Tk.Label(self.group_model, text="Connectivity of the Random Graph in percentage").pack(side="top", fill=Tk.BOTH)
         self.amount_connectivity = Tk.Spinbox(self.group_model, from_=1, to=100)
+        self.amount_connectivity.delete(0,"end")
+        self.amount_connectivity.insert(0,"100")
         self.amount_connectivity.pack(side="top", fill=Tk.BOTH)
 
         #graph creator panel
@@ -123,6 +143,9 @@ class ParamPanel(Tk.Frame):
         self.model_param_pnl_graph_creator_lbl.pack(side="top", fill=Tk.BOTH)
         self.model_param_pnl_graph_creator_textarea = Tk.Text(self.group_model, height=10, width=20)
         self.model_param_pnl_graph_creator_textarea.pack(side="top", fill=Tk.BOTH)
+
+        self.resetButton = Tk.Button(self.group_model, text="Set model")
+        self.resetButton.pack(side="top",fill=Tk.BOTH)
         
 
     def retrieve_input_graph(self):

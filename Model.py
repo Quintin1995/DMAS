@@ -12,18 +12,23 @@ class State(Enum):
     DONE        = 2
     NO_CALLS    = 3
 
+class Behavior(Enum):
+    LIE         = 1
+    MISTAKE     = 2
+
 class Model:
     """
     GOSSIP MODEL
     Determines who can call who based on chosen protocol / phonebook initialization.
     Keeps track of who calls who.
     """
-    def __init__ (self, amount_agents, amount_secrets, transfer_chance, protocol, phonebooktype):
+    def __init__ (self, amount_agents, amount_secrets, transfer_chance, protocol, phonebooktype, lie_factor, behavior):
         self.protocol           = protocol
         self.amount_agents      = amount_agents
         self.amount_secrets     = amount_secrets
         self.possible_secrets   = list(range(self.amount_secrets))
         self.transfer_chance    = transfer_chance
+        self.lie_factor       = float(lie_factor)/100
         self.secrets = list ()
         self.initialize_secrets()
         self.phonebook_type     = phonebooktype
@@ -33,7 +38,7 @@ class Model:
         self.calls_made         = 0
         self.state              = State.RUN
         self.summed_knowledge   = list()
-
+        self.behavior           = behavior
     """
     Initializes the global list of secrets.
     """
@@ -128,10 +133,19 @@ class Model:
             # Agents know their own secret
             if (target_agent == receiver):
                 continue
-            if (self.agent_has_information(sender, target_agent)):
+            elif (self.agent_has_information(sender, target_agent)):
                 if (random.randint(0, 99) < self.transfer_chance):
-                    self.secrets[receiver][target_agent][self.get_secret_value(sender, target_agent)] += 1
-
+                    secret_knowledge = self.get_secret_value(sender, target_agent)
+                    self.secrets[receiver][target_agent][secret_knowledge] += float(self.secrets[sender][target_agent][secret_knowledge])/sum(self.secrets[sender][target_agent])
+                else:
+                    random_knowledge = random.choice(self.possible_secrets)
+                    if self.behavior == Behavior.LIE:
+                        self.secrets[receiver][target_agent][random_knowledge] += self.lie_factor
+                    elif self.behavior == Behavior.MISTAKE:
+                        if self.secrets[receiver][target_agent][random_knowledge] == 0:
+                            self.secrets[receiver][target_agent][random_knowledge] += self.lie_factor
+                        else:
+                            self.secrets[receiver][target_agent][random_knowledge] += float(self.secrets[sender][target_agent][random_knowledge])/sum(self.secrets[sender][target_agent])
     """
     Prints to the console, the actual secrets that agents have.
     """
@@ -181,6 +195,7 @@ class Model:
         for iteration in range (iterations):
             if len(self.get_experts()) == self.amount_agents:
                 self.state = State.DONE
+                print(self.state)
                 break
             try: 
                 self.next_call()
