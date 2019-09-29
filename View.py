@@ -11,9 +11,10 @@ import networkx as nx
 class View(Tk.Frame):
     def __init__(self, master):
         Tk.Frame.__init__(self, master)
+        
         # self.frame = Tk.Frame(master)
-        self.fig = Figure( figsize=(7.5, 4), dpi=80 )
-        self.line_fig = Figure( figsize=(7.5, 4), dpi=80 )
+        self.fig = Figure( figsize=(15, 6), dpi=80 )
+        self.line_fig = Figure( figsize=(15, 6), dpi=80 )
         # self.ax0 = self.fig.add_axes( (0.05, .05, .90, .90), facecolor=(.25,.25,.25), frameon=False)
         # self.ax0 = self.fig
         self.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=1)
