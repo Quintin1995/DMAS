@@ -5,6 +5,7 @@ import numpy as np
 from itertools import permutations
 import sys
 import matplotlib.pyplot as plt
+from tkinter import scrolledtext
 import networkx as nx
 
 
@@ -12,11 +13,9 @@ class View(Tk.Frame):
     def __init__(self, master):
         Tk.Frame.__init__(self, master)
         
-        # self.frame = Tk.Frame(master)
         self.fig = Figure( figsize=(15, 6), dpi=80 )
         self.line_fig = Figure( figsize=(15, 6), dpi=80 )
-        # self.ax0 = self.fig.add_axes( (0.05, .05, .90, .90), facecolor=(.25,.25,.25), frameon=False)
-        # self.ax0 = self.fig
+
         self.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=1)
         self.sidepanel=SidePanel(self)
 
@@ -30,33 +29,37 @@ class View(Tk.Frame):
 
         self.line_canvas = FigureCanvasTkAgg(self.line_fig, master=self)
         self.line_canvas.get_tk_widget().pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
-        # self.canvas.draw()
+
 
 class LeftPanel(Tk.Frame):
     def __init__(self, master):
         Tk.Frame.__init__(self, master)
         self.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=1)
 
+        #Frame for fields
         self.group_info = Tk.LabelFrame(self, text="Session information", padx=5, pady=5)
         self.group_info.pack(side="top", fill=Tk.BOTH)
         
+        #Protocol status text
         self.model_state_lbl = Tk.Label(self.group_info, text="Protocol running", fg="blue")
         self.model_state_lbl.pack(side="top", fill=Tk.BOTH)
 
+        #amount calls made txt
         self.model_iter_lbl = Tk.Label(self.group_info, text="Calls made: 0")
         self.model_iter_lbl.pack(side="top", fill=Tk.BOTH)
+
+        #call log
+        self.model_call_log_lbl = Tk.Label(self.group_info, text="Call Log", fg="green")
+        self.model_call_log_lbl.pack(side="top", fill=Tk.BOTH)
+        self.model_call_log_textarea = Tk.Text(self.group_info, height=20, width=35)
+        self.model_call_log_textarea.pack(side="top", fill=Tk.BOTH)
+
 
 
 class SidePanel(Tk.Frame):
     def __init__(self, master):
         Tk.Frame.__init__(self, master)
         self.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=1)
-        
-        # self.drawGraphBut = Tk.Button(self, text="Draw Graph")
-        # self.drawGraphBut.pack(side="top",fill=Tk.BOTH)
-        
-        # self.clearButton = Tk.Button(self, text="Clear")
-        # self.clearButton.pack(side="top",fill=Tk.BOTH)
 
         self.group_run = Tk.LabelFrame(self, text="Run model", padx=5, pady=5)
         self.group_run.pack(side="bottom", fill=Tk.BOTH)
@@ -77,8 +80,6 @@ class ExpPanel(Tk.Frame):
         Tk.Frame.__init__(self, master)
         self.pack(side=Tk.BOTTOM, fill=Tk.BOTH, expand=1)
 
-        # self.testBut = Tk.Button(self, text="Test")
-        # self.testBut.pack(side="top",fill=Tk.BOTH)
 
 class ParamPanel(Tk.Frame):
     def __init__(self, master):
@@ -112,7 +113,7 @@ class ParamPanel(Tk.Frame):
         self.resetButton = Tk.Button(self.group_model, text="Set model")
         self.resetButton.pack(side="top",fill=Tk.BOTH)
 
-        Tk.Label(self.group_model, text="Connectivity of Graph %").pack(side="top", fill=Tk.BOTH)
+        Tk.Label(self.group_model, text="Connectivity of the Random Graph in Percents").pack(side="top", fill=Tk.BOTH)
         self.amount_connectivity = Tk.Spinbox(self.group_model, from_=1, to=100)
         self.amount_connectivity.pack(side="top", fill=Tk.BOTH)
         
