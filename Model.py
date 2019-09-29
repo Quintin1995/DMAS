@@ -39,7 +39,6 @@ class Model:
         self.state              = State.RUN
         self.summed_knowledge   = list()
         self.behavior           = behavior
-        print(self.lie_factor)
     """
     Initializes the global list of secrets.
     """
