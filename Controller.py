@@ -38,12 +38,16 @@ class Controller():
         self.axis = self.view.fig.add_subplot(111)
         self.axis.legend(loc='center')
         self.axis.axis('off')
+        #set second plot axis in the main plot
         self.line_axis = self.view.line_fig.add_subplot(111)
+
+        #legend styling of the graph plot
         self.legend_styling = [Line2D([0], [0], color='w', markerfacecolor='#FF0000', marker='o', markersize=10, lw=4),
                         Line2D([0], [0], color='w', markerfacecolor='#00FF00', marker='o', markersize=10, lw=4),
                         Line2D([0], [0], color='w', markerfacecolor='#0000FF', marker='o', markersize=10, lw=4)]
 
         self.draw_graph(0)
+        self.draw_line(0)
 
         self.view.sidepanel.iterBut.bind("<Button>", self.Btn_Do_iterations)
         self.view.sidepanel.iterXBut.bind("<Button>", self.Btn_DoN_iterations)
@@ -98,6 +102,7 @@ class Controller():
         self.update_info()
   
     def draw_graph(self,event):
+        #axis is the first plot with the graph in it.
         self.view.fig.clear()
         self.axis = self.view.fig.add_subplot(111)
         nx.draw_networkx(self.model.graph, node_color=self.get_agent_colors(), pos=nx.circular_layout(self.model.graph), ax=self.axis)
@@ -110,6 +115,7 @@ class Controller():
     def draw_line(self,event):
         self.view.line_fig.clear()
         self.line_axis = self.view.line_fig.add_subplot(111)
+        self.line_axis.set_ylim([0, (self.model.amount_agents * self.model.amount_agents)])
         # print (self.model.summed_knowledge)
         self.set_line_style()
         
@@ -187,6 +193,8 @@ class Controller():
         
         self.line_axis.clear()
         self.set_line_style ()
+        #qlo
+        self.line_axis.set_ylim([0, (self.model.amount_agents * self.model.amount_agents)])
         self.line_axis.plot(list(range(self.model.calls_made)),self.model.summed_knowledge)
         self.view.line_canvas.draw()
         self.update_info()
