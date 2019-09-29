@@ -64,6 +64,8 @@ class Controller():
         self.selected_amount_iterations = self.view.sidepanel.amount_iterations
         self.selected_amount_connectivity = self.view.parampanel.amount_connectivity
 
+        self.callIdx = 0
+
     def run(self):
         self.root.title("DMAS - GOSSIP PROTOCOLS")
         self.root.deiconify()
@@ -131,6 +133,9 @@ class Controller():
             #add all defined nodes to the graph
             self.model.graph.add_nodes_from(list(range(self.model.amount_agents)))
             self.model.graph.add_edges_from(edges_tuples)
+
+        #reset the call idx
+        self.callIdx = 0
         
         #update the actual graph, when the reset button is pressed.
         self.draw_graph(event)
@@ -265,10 +270,14 @@ class Controller():
             a,b = call
             if amount > self.model.calls_made:
                 amount = self.model.calls_made
-            iteration = int(self.model.calls_made - amount + idx + 1)
+            #iteration = int(self.model.calls_made - amount + idx + 1)
             # if iteration < 0:
             #     iteration = self.model.calls_made
-            formated_call += "Call " + str(iteration) + ": Agent " + str(a) + " calls Agent " + str(b) + "\n"
+
+            self.callIdx += 1 # increment callIdx
+            # append current call to log
+            formated_call += "Call " + str(self.callIdx) + ": Agent " + str(a) + " calls Agent " + str(b) + "\n" 
+            
         return formated_call
 
     def get_agent_color (self, agent_idx):
