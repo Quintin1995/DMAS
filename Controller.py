@@ -92,14 +92,43 @@ class Controller():
             phonebook = PhonebookType.TWO_WORLDS
         elif choice == "RANDOM GRAPH":
             phonebook = PhonebookType.RAND_GRAPH
+        elif choice == "CUSTOM GRAPH":
+            phonebook = PhonebookType.CUSTOM_GRAPH
+            raw_graph_string = self.view.parampanel.retrieve_input_graph()
+            edges_tuples = self.get_edges_from_raw_graph_string(raw_graph_string)
 
         amount_agents = int(self.selected_amount_agents.get())
 
         self.model=Model(amount_agents, MAX_SECRET, TRANSFER_CHANCE, protocol, phonebook)
+
+        #after model has been set, initialize the phonebook
         self.model.phonebook_connectivity = int(self.selected_amount_connectivity.get())
         self.model.initialize_phonebook()
+
+        #must happen after model is initialized
+        if(phonebook == PhonebookType.CUSTOM_GRAPH):
+            for a,b in edges_tuples:
+                self.model.phonebook[a].append(b)
+                self.model.phonebook[b].append(a)
+        #also update the graph in the model with the newly created graph
+        if(phonebook == PhonebookType.CUSTOM_GRAPH):
+            self.model.graph.clear()
+            #add all defined nodes to the graph
+            self.model.graph.add_nodes_from(list(range(self.model.amount_agents)))
+            self.model.graph.add_edges_from(edges_tuples)
+        
+        
         self.draw_graph(event)
         self.update_info()
+        
+    def get_edges_from_raw_graph_string(self, raw_graph_string):
+        print("formatting raw custom graph string")
+        tuple_list = list()
+        lazy_tuples = raw_graph_string.split('\n')
+        for lazy_tuple in lazy_tuples:
+            nodes_of_edge = lazy_tuple.split(',')
+            tuple_list.append((int(nodes_of_edge[0]), int(nodes_of_edge[1])))
+        return tuple_list
   
     def draw_graph(self,event):
         #axis is the first plot with the graph in it.
@@ -193,7 +222,8 @@ class Controller():
         
         self.line_axis.clear()
         self.set_line_style ()
-        #qlo
+
+        #update the axis
         self.line_axis.set_ylim([0, (self.model.amount_agents * self.model.amount_agents)])
         self.line_axis.plot(list(range(self.model.calls_made)),self.model.summed_knowledge)
         self.view.line_canvas.draw()

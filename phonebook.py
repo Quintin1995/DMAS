@@ -12,6 +12,7 @@ class PhonebookType:
     ALL         = 1     # Everyone is in the phonebook
     TWO_WORLDS  = 2 
     RAND_GRAPH  = 3
+    CUSTOM_GRAPH = 4
 """
 Generate a phonebook based on the given phonebook type.
 """
@@ -68,7 +69,10 @@ def generate_phonebook (phonebook_type, amount_agents, connectivity):
                     phonebook[idx].append(a)
                 if b != idx:
                     phonebook[idx].append(b)
-
+    if phonebook_type == PhonebookType.CUSTOM_GRAPH:
+        #passing because we already have a graph to make a phonebook from
+        for agent_idx in range (amount_agents):
+            phonebook.append(list())
     return phonebook
 
 
