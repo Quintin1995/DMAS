@@ -122,12 +122,15 @@ class Controller():
         self.draw_graph(event)
         self.update_info()
 
-        
+    
+    #takes in a raw unformated string from the GUI, and will make a list of tuples,
+    #these tuples are edges for the graph to be created
     def get_edges_from_raw_graph_string(self, raw_graph_string):
-        print("formatting raw custom graph string")
         tuple_list = list()
-        lazy_tuples = raw_graph_string.split('\n')
+        lazy_tuples = raw_graph_string.split('\n')      #lazy, as in there are no parenthesis required for this tuple.
         for lazy_tuple in lazy_tuples:
+            lazy_tuple = lazy_tuple.replace('(', '')
+            lazy_tuple = lazy_tuple.replace(')', '')
             nodes_of_edge = lazy_tuple.split(',')
             a = int(nodes_of_edge[0])
             b = int(nodes_of_edge[1])
