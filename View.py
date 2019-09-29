@@ -102,7 +102,7 @@ class ParamPanel(Tk.Frame):
         self.amount_agents = Tk.Spinbox(self.group_model, from_=3, to=100)
         self.amount_agents.pack(side="top", fill=Tk.BOTH)
 
-        AVAILABLE_PHONEBOOKS = ["ALL", "TWO WORLDS", "RANDOM GRAPH"]
+        AVAILABLE_PHONEBOOKS = ["ALL", "TWO WORLDS", "RANDOM GRAPH", "CUSTOM GRAPH"]
         self.selected_phonebook = Tk.StringVar(self)
         self.selected_phonebook.set("ALL") # default value
 
@@ -116,4 +116,14 @@ class ParamPanel(Tk.Frame):
         Tk.Label(self.group_model, text="Connectivity of the Random Graph in Percents").pack(side="top", fill=Tk.BOTH)
         self.amount_connectivity = Tk.Spinbox(self.group_model, from_=1, to=100)
         self.amount_connectivity.pack(side="top", fill=Tk.BOTH)
+
+        #graph creator panel
+        info_string = "Graph creator, on tuples (without paranthesis)\n Example:\n 0,1\n1,0\n2,0" + "\nSet phonebook to CUSTOM GRAPH" + "\nClick on set model"
+        self.model_param_pnl_graph_creator_lbl = Tk.Label(self.group_model, text=info_string, fg="red")
+        self.model_param_pnl_graph_creator_lbl.pack(side="top", fill=Tk.BOTH)
+        self.model_param_pnl_graph_creator_textarea = Tk.Text(self.group_model, height=10, width=20)
+        self.model_param_pnl_graph_creator_textarea.pack(side="top", fill=Tk.BOTH)
         
+
+    def retrieve_input_graph(self):
+        return self.model_param_pnl_graph_creator_textarea.get("1.0",'end-1c')
