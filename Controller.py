@@ -245,9 +245,16 @@ class Controller():
         #take last calls from call log
         calls_list = self.model.call_log[len(self.model.call_log)-amount:len(self.model.call_log)]
         formated_call = ""
+        #loop over call list
         for idx, call in enumerate(calls_list):
+            #extract call
             a,b = call
-            formated_call += "Call " + str(self.model.calls_made - amount + idx + 1) + ": Agent " + str(a) + " calls Agent " + str(b) + "\n"
+            if amount > self.model.calls_made:
+                amount = self.model.calls_made
+            iteration = int(self.model.calls_made - amount + idx + 1)
+            # if iteration < 0:
+            #     iteration = self.model.calls_made
+            formated_call += "Call " + str(iteration) + ": Agent " + str(a) + " calls Agent " + str(b) + "\n"
         return formated_call
 
     def get_agent_color (self, agent_idx):
