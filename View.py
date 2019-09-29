@@ -118,7 +118,8 @@ class ParamPanel(Tk.Frame):
         self.amount_connectivity.pack(side="top", fill=Tk.BOTH)
 
         #graph creator panel
-        self.model_param_pnl_graph_creator_lbl = Tk.Label(self.group_model, text="Graph creator, on tuples (without paranthesis) Example:\n 0,1\n1,0\n2,0", fg="green")
+        info_string = "Graph creator, on tuples (without paranthesis)\n Example:\n 0,1\n1,0\n2,0" + "\nSet phonebook to CUSTOM GRAPH" + "\nClick on set model"
+        self.model_param_pnl_graph_creator_lbl = Tk.Label(self.group_model, text=info_string, fg="red")
         self.model_param_pnl_graph_creator_lbl.pack(side="top", fill=Tk.BOTH)
         self.model_param_pnl_graph_creator_textarea = Tk.Text(self.group_model, height=10, width=20)
         self.model_param_pnl_graph_creator_textarea.pack(side="top", fill=Tk.BOTH)

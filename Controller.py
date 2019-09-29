@@ -12,6 +12,7 @@ import networkx as nx
 from View import View, SidePanel
 import matplotlib.style as style
 from matplotlib.lines import Line2D
+from tkinter import messagebox
 
 style.use('seaborn-bright')
 
@@ -117,9 +118,10 @@ class Controller():
             self.model.graph.add_nodes_from(list(range(self.model.amount_agents)))
             self.model.graph.add_edges_from(edges_tuples)
         
-        
+        #update the actual graph, when the reset button is pressed.
         self.draw_graph(event)
         self.update_info()
+
         
     def get_edges_from_raw_graph_string(self, raw_graph_string):
         print("formatting raw custom graph string")
@@ -127,7 +129,12 @@ class Controller():
         lazy_tuples = raw_graph_string.split('\n')
         for lazy_tuple in lazy_tuples:
             nodes_of_edge = lazy_tuple.split(',')
-            tuple_list.append((int(nodes_of_edge[0]), int(nodes_of_edge[1])))
+            a = int(nodes_of_edge[0])
+            b = int(nodes_of_edge[1])
+            if( (a > self.model.amount_agents-1) or (b > self.model.amount_agents-1) ):
+                messagebox.showerror("Index Error", "Trying to reference an Agent that does not exist")
+                return list()
+            tuple_list.append((a, b))
         return tuple_list
   
     def draw_graph(self,event):
