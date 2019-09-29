@@ -20,6 +20,8 @@ style.use('seaborn-bright')
 AMOUNT_AGENTS   = 10
 MAX_SECRET      = 3
 TRANSFER_CHANCE = 100
+LIE_FACTOR      = 0.25
+BEHAVIOR        = Behavior.LIE
 
 ## colors for the graph
 EXPERT_COLOR = '#0000FF'
@@ -34,7 +36,7 @@ LINE_PLOT_XLAB  = "Amount of calls made"
 class Controller():
     def __init__(self):
         self.root = Tk.Tk()
-        self.model=Model(AMOUNT_AGENTS, MAX_SECRET, TRANSFER_CHANCE, Protocols.ANY, PhonebookType.TWO_WORLDS)
+        self.model=Model(AMOUNT_AGENTS, MAX_SECRET, TRANSFER_CHANCE, Protocols.ANY, PhonebookType.TWO_WORLDS, LIE_FACTOR, BEHAVIOR)
         self.view=View(self.root)
         self.axis = self.view.fig.add_subplot(111)
         self.axis.legend(loc='center')
@@ -55,7 +57,10 @@ class Controller():
         self.view.parampanel.resetButton.bind("<Button>", self.reset_model)
         self.selected_model = self.view.parampanel.selected_model
         self.selected_phonebook = self.view.parampanel.selected_phonebook
+        self.selected_behavior = self.view.parampanel.selected_behavior
         self.selected_amount_agents = self.view.parampanel.amount_agents
+        self.selected_transfer_chance = self.view.parampanel.transfer_chance
+        self.selected_lie_factor = self.view.parampanel.lie_factor
         self.selected_amount_iterations = self.view.sidepanel.amount_iterations
         self.selected_amount_connectivity = self.view.parampanel.amount_connectivity
 
@@ -99,8 +104,17 @@ class Controller():
             edges_tuples = self.get_edges_from_raw_graph_string(raw_graph_string)
 
         amount_agents = int(self.selected_amount_agents.get())
+        transfer_chance = int(self.selected_transfer_chance.get())
+        lie_factor = float(self.selected_lie_factor.get())
 
-        self.model=Model(amount_agents, MAX_SECRET, TRANSFER_CHANCE, protocol, phonebook)
+        choice = self.selected_behavior.get()
+        behavior = Behavior.LIE
+        if choice == 'LIE':
+            behavior = Behavior.LIE
+        elif choice == 'MISTAKE':
+            behavior = Behavior.MISTAKE
+
+        self.model=Model(amount_agents, MAX_SECRET, transfer_chance, protocol, phonebook, lie_factor, behavior)
 
         #after model has been set, initialize the phonebook
         self.model.phonebook_connectivity = int(self.selected_amount_connectivity.get())
