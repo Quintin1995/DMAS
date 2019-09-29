@@ -140,6 +140,7 @@ class Model:
                     self.secrets[receiver][target_agent][secret_knowledge] += float(self.secrets[sender][target_agent][secret_knowledge])/sum(self.secrets[sender][target_agent])
                 else:
                     random_knowledge = random.choice(self.possible_secrets)
+<<<<<<< HEAD:Model.py
                     if self.behavior == Behavior.LIE:
                         self.secrets[receiver][target_agent][random_knowledge] += self.lie_factor
                     elif self.behavior == Behavior.MISTAKE:
@@ -147,6 +148,13 @@ class Model:
                             self.secrets[receiver][target_agent][random_knowledge] += self.lie_factor
                         else:
                             self.secrets[receiver][target_agent][random_knowledge] += float(self.secrets[sender][target_agent][random_knowledge])/sum(self.secrets[sender][target_agent])
+=======
+                    # self.secrets[receiver][target_agent][random_knowledge] += 0.1
+                    if self.secrets[receiver][target_agent][random_knowledge] == 0:
+                        self.secrets[receiver][target_agent][random_knowledge] += 0.25
+                    else: 
+                        self.secrets[receiver][target_agent][random_knowledge] += float(self.secrets[sender][target_agent][random_knowledge])/sum(self.secrets[sender][target_agent])
+>>>>>>> fde76b1f112b42bd5984e074cbc7e28c619d7f29:model.py
 
     """
     Prints to the console, the actual secrets that agents have.
@@ -197,12 +205,14 @@ class Model:
         for iteration in range (iterations):
             if len(self.get_experts()) == self.amount_agents:
                 self.state = State.DONE
+                print(self.state)
                 break
             try: 
                 self.next_call()
             except NoPossibleCallersError:
                 # print ("Ended execution after {} iterations, no more calls possible.".format(iteration))
                 self.state = State.NO_CALLS
+<<<<<<< HEAD:Model.py
                 break
     
     def reset_model (self):
@@ -219,3 +229,7 @@ class Model:
 
     def get_last_call(self):
         return (self.call_log[-1])
+=======
+                print(self.state)
+                break
+>>>>>>> fde76b1f112b42bd5984e074cbc7e28c619d7f29:model.py
