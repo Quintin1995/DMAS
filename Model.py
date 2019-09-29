@@ -28,7 +28,7 @@ class Model:
         self.amount_secrets     = amount_secrets
         self.possible_secrets   = list(range(self.amount_secrets))
         self.transfer_chance    = transfer_chance
-        self.lie_factor       = lie_factor
+        self.lie_factor       = float(lie_factor)/100
         self.secrets = list ()
         self.initialize_secrets()
         self.phonebook_type     = phonebooktype
@@ -39,7 +39,7 @@ class Model:
         self.state              = State.RUN
         self.summed_knowledge   = list()
         self.behavior           = behavior
-
+        print(self.lie_factor)
     """
     Initializes the global list of secrets.
     """
@@ -140,7 +140,6 @@ class Model:
                     self.secrets[receiver][target_agent][secret_knowledge] += float(self.secrets[sender][target_agent][secret_knowledge])/sum(self.secrets[sender][target_agent])
                 else:
                     random_knowledge = random.choice(self.possible_secrets)
-<<<<<<< HEAD:Model.py
                     if self.behavior == Behavior.LIE:
                         self.secrets[receiver][target_agent][random_knowledge] += self.lie_factor
                     elif self.behavior == Behavior.MISTAKE:
@@ -148,14 +147,6 @@ class Model:
                             self.secrets[receiver][target_agent][random_knowledge] += self.lie_factor
                         else:
                             self.secrets[receiver][target_agent][random_knowledge] += float(self.secrets[sender][target_agent][random_knowledge])/sum(self.secrets[sender][target_agent])
-=======
-                    # self.secrets[receiver][target_agent][random_knowledge] += 0.1
-                    if self.secrets[receiver][target_agent][random_knowledge] == 0:
-                        self.secrets[receiver][target_agent][random_knowledge] += 0.25
-                    else: 
-                        self.secrets[receiver][target_agent][random_knowledge] += float(self.secrets[sender][target_agent][random_knowledge])/sum(self.secrets[sender][target_agent])
->>>>>>> fde76b1f112b42bd5984e074cbc7e28c619d7f29:model.py
-
     """
     Prints to the console, the actual secrets that agents have.
     """
@@ -212,7 +203,6 @@ class Model:
             except NoPossibleCallersError:
                 # print ("Ended execution after {} iterations, no more calls possible.".format(iteration))
                 self.state = State.NO_CALLS
-<<<<<<< HEAD:Model.py
                 break
     
     def reset_model (self):
@@ -229,7 +219,3 @@ class Model:
 
     def get_last_call(self):
         return (self.call_log[-1])
-=======
-                print(self.state)
-                break
->>>>>>> fde76b1f112b42bd5984e074cbc7e28c619d7f29:model.py

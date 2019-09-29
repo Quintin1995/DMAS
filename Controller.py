@@ -20,7 +20,7 @@ style.use('seaborn-bright')
 AMOUNT_AGENTS   = 10
 MAX_SECRET      = 3
 TRANSFER_CHANCE = 100
-LIE_FACTOR      = 0.25
+LIE_FACTOR      = 25
 BEHAVIOR        = Behavior.LIE
 
 ## colors for the graph
@@ -36,7 +36,7 @@ LINE_PLOT_XLAB  = "Amount of calls made"
 class Controller():
     def __init__(self):
         self.root = Tk.Tk()
-        self.model=Model(AMOUNT_AGENTS, MAX_SECRET, TRANSFER_CHANCE, Protocols.ANY, PhonebookType.TWO_WORLDS, LIE_FACTOR, BEHAVIOR)
+        self.model=Model(AMOUNT_AGENTS, MAX_SECRET, TRANSFER_CHANCE, Protocols.ANY, PhonebookType.ALL, LIE_FACTOR, BEHAVIOR)
         self.view=View(self.root)
         self.axis = self.view.fig.add_subplot(111)
         self.axis.legend(loc='center')

@@ -99,6 +99,8 @@ class ParamPanel(Tk.Frame):
 
         Tk.Label(self.group_model, text="Amount agents").pack(side="top", fill=Tk.BOTH)
         self.amount_agents = Tk.Spinbox(self.group_model, from_=3, to=100)
+        self.amount_agents.delete(0,"end")
+        self.amount_agents.insert(0,"10")
         self.amount_agents.pack(side="top", fill=Tk.BOTH)
 
         AVAILABLE_PHONEBOOKS = ["LIE", "MISTAKE"]
@@ -109,12 +111,16 @@ class ParamPanel(Tk.Frame):
         self.behavior_selector = Tk.OptionMenu(self.group_model, self.selected_behavior, *AVAILABLE_PHONEBOOKS)
         self.behavior_selector.pack(side="top", fill=Tk.BOTH)
 
-        Tk.Label(self.group_model, text="Chance of telling the truth").pack(side="top", fill=Tk.BOTH)
+        Tk.Label(self.group_model, text="Chance of telling the truth in percentage").pack(side="top", fill=Tk.BOTH)
         self.transfer_chance = Tk.Spinbox(self.group_model, from_=1, to=100)
+        self.transfer_chance.delete(0,"end")
+        self.transfer_chance.insert(0,"100")
         self.transfer_chance.pack(side="top", fill=Tk.BOTH)
 
-        Tk.Label(self.group_model, text="Strength of a lie between 0 and 1").pack(side="top", fill=Tk.BOTH)
+        Tk.Label(self.group_model, text="Strength of a lie in percentage").pack(side="top", fill=Tk.BOTH)
         self.lie_factor = Tk.Spinbox(self.group_model, from_=0, to=1)
+        self.lie_factor.delete(0,"end")
+        self.lie_factor.insert(0,"25")
         self.lie_factor.pack(side="top", fill=Tk.BOTH)
 
         AVAILABLE_PHONEBOOKS = ["ALL", "TWO WORLDS", "RANDOM GRAPH", "CUSTOM GRAPH"]
@@ -125,8 +131,10 @@ class ParamPanel(Tk.Frame):
         self.phonebook_selector = Tk.OptionMenu(self.group_model, self.selected_phonebook, *AVAILABLE_PHONEBOOKS)
         self.phonebook_selector.pack(side="top", fill=Tk.BOTH)
 
-        Tk.Label(self.group_model, text="Connectivity of the Random Graph in Percents").pack(side="top", fill=Tk.BOTH)
+        Tk.Label(self.group_model, text="Connectivity of the Random Graph in percentage").pack(side="top", fill=Tk.BOTH)
         self.amount_connectivity = Tk.Spinbox(self.group_model, from_=1, to=100)
+        self.amount_connectivity.delete(0,"end")
+        self.amount_connectivity.insert(0,"100")
         self.amount_connectivity.pack(side="top", fill=Tk.BOTH)
 
         #graph creator panel
