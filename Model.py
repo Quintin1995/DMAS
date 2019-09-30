@@ -6,6 +6,7 @@ import random
 from enum import Enum
 import networkx as nx
 from copy import deepcopy
+import numpy as np
 
 class State(Enum):
     RUN         = 1
@@ -34,6 +35,8 @@ class Model:
         self.phonebook_type     = phonebooktype
         self.phonebook_connectivity = 100
         self.initialize_phonebook()
+        self.phonebook_calls = list() # used for the CO protocol
+        self.initialize_phonebook_calls()
         self.call_log           = list()
         self.calls_made         = 0
         self.state              = State.RUN
@@ -71,6 +74,23 @@ class Model:
         self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
         self.graph              = nx.Graph()
         self.graph.add_edges_from(self.conv_phonebook)
+
+    """
+    Initializes the calls made between agents used for the call once (CO) protocol
+    if the call is made, the value is 1, no call made is 0, not in phonebook is -1
+    """
+    def initialize_phonebook_calls (self):
+        self.phonebook_calls = np.zeros ((self.amount_agents, self.amount_agents))
+        for agent_idx in range (self.amount_agents):
+            current_phonebook = self.phonebook[agent_idx]
+            for target_idx in range (self.amount_agents):
+                if target_idx == agent_idx: # agent can't call itself
+                    self.phonebook_calls[agent_idx, target_idx] = 1 # set to already called instead of impossible to call
+                                                                    # this removes complications when learning 
+                                                                    # new phonenumbers
+                elif target_idx not in current_phonebook:
+                    self.phonebook_calls[agent_idx, target_idx] = -1 # set to not possible to call (yet)
+                
 
     """
     Does one more iteration of the gossip model making a call between two agents,

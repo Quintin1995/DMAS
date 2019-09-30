@@ -73,6 +73,8 @@ def generate_phonebook (phonebook_type, amount_agents, connectivity):
         #passing because we already have a graph to make a phonebook from
         for agent_idx in range (amount_agents):
             phonebook.append(list())
+
+    print(phonebook)
     return phonebook
 
 
