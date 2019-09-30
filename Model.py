@@ -23,7 +23,7 @@ class Model:
     Determines who can call who based on chosen protocol / phonebook initialization.
     Keeps track of who calls who.
     """
-    def __init__ (self, amount_agents, amount_secrets, transfer_chance, protocol, phonebooktype, lie_factor, behavior, phonebook_connectivity = 100):
+    def __init__ (self, amount_agents, amount_secrets, transfer_chance, protocol, phonebooktype, lie_factor, behavior, phonebook_connectivity = 100, exchange_phonebooks = False):
         self.protocol           = protocol
         self.amount_agents      = amount_agents
         self.amount_secrets     = amount_secrets
@@ -42,8 +42,8 @@ class Model:
         self.state              = State.RUN
         self.summed_knowledge   = list()
         self.behavior           = behavior
-        self.exchange_phonebooks = True # transfer phonenumbers during exchange of secrets
-        
+        self.exchange_phonebooks = exchange_phonebooks # transfer phonenumbers during exchange of secrets
+
     """
     Initializes the global list of secrets.
     """
@@ -56,7 +56,7 @@ class Model:
                     self.secrets[agent_idx][target_idx].append(list())
                     self.secrets[agent_idx][target_idx][secret_idx] = 0
             
-            self.secrets[agent_idx][agent_idx][random.choice(self.possible_secrets)] = 999999
+            self.secrets[agent_idx][agent_idx][random.choice(self.possible_secrets)] = 99999999
 
     """
     Initializes a dictionary for each agent, which can be used later to store additional
@@ -78,13 +78,27 @@ class Model:
         self.graph.add_edges_from(self.conv_phonebook)
 
     """
+    Adds number to the phonebook of caller
+    Also updates conv_phonebook and optionally
+    updates the graph with the new edge
+    """
+    def add_to_phonebook(self, caller, number, update_graph = True):
+        self.phonebook[caller].append(number) # add number to phonebook
+        self.conv_phonebook.append((caller, number))
+        if update_graph:
+            new_edge = list()
+            new_edge.append( (caller, number) )
+        self.graph.add_edges_from(new_edge)
+
+
+    """
     Initializes the calls made between agents used for the call once (CO) protocol
     if the call is made, the value is 1, no call made is 0, not in phonebook is -1
     """
     def initialize_phonebook_calls (self):
         self.phonebook_calls = np.zeros ((self.amount_agents, self.amount_agents))
         for agent_idx in range (self.amount_agents):
-            current_phonebook = self.phonebook[agent_idx]
+            # current_phonebook = self.phonebook[agent_idx]
             print("current_phonebook: ", current_phonebook)
             for target_idx in range (self.amount_agents):
                 if target_idx == agent_idx: # agent can't call itself
@@ -130,11 +144,11 @@ class Model:
         self.summed_knowledge.append(self.get_sum_known_secrets())
 
         ## debug
-        print("\nCall: ",  self.calls_made)
-        print(caller,  " called ",  receiver, "\n")
-        print(self.phonebook_calls)
-        print()
-        print(self.phonebook)
+        # print("\nCall: ",  self.calls_made)
+        # print(caller,  " called ",  receiver, "\n")
+        # print(self.phonebook_calls)
+        # print()
+        # print(self.phonebook)
 
     """
     Gets the current prediction that an agent has for the secret number of a target agent.
@@ -204,8 +218,7 @@ class Model:
         for number in self.phonebook[sender]:
             if self.phonebook_calls[receiver, number] == -1: # number not yet callable
                 self.phonebook_calls[receiver, number] = 0 # set number callable and not yet called
-                self.phonebook[sender].append(number) # add number to phonebook
-                print("set ", number, " to callabel for ", receiver)
+                self.add_to_phonebook(sender, number)
 
     """
     Prints to the console, the actual secrets that agents have.
