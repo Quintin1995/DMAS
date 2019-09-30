@@ -42,10 +42,9 @@ def choose_callers(model):
 
     # Call once
     elif protocol == Protocols.CO:
-        # Pick someone that still has someone in their phonebook
-        # For the call once protocol, the recipient is removed from the phonebook 
-        # Therefore, no additional constraints need to be made.
-        pass
+        # Pick someone that still has someone in their phonebook that they have not called yet
+        phonebook_calls = model.phonebook_calls
+        possible_callers =  [agent for agent in range (amount_agents) if list(phonebook_calls[agent]).count(0) > 0]
         
     # Token
     elif protocol == Protocols.TOK:
@@ -88,21 +87,22 @@ def choose_callers(model):
     receiver = random.choice(eligible_receivers)
 
     # Update the phonebook according to protocol specifications
-    update_phonebook(caller, receiver, phonebook, protocol)
+    update_phonebook(model, caller, receiver, phonebook, protocol)
 
     return (caller, receiver)
 """
 Update the phonebook after caller and receiver of a new call are known.
 E.g. if caller cannot call same agent again, remove the receiver from the caller's phonebook.
 """
-def update_phonebook(caller, receiver, phonebook, protocol):
+def update_phonebook(model, caller, receiver, phonebook, protocol):
     # In call any protocol, we remove no one from the phonebooks
     if protocol == Protocols.ANY:
         pass
     
-    # In call once, we remove the receiver from the caller's phonebook
+    # In call once, we set the corresponding call to 1 (call made)
     elif protocol == Protocols.CO:
-        phonebook[caller].remove(receiver)
+        model.phonebook_calls[caller, receiver] = 1 
+        pass
 
     # No changes need to be made to the phonebook based on an agents call
     # The callable agents are determined based on the models call log.

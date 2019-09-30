@@ -97,6 +97,18 @@ class ParamPanel(Tk.Frame):
         self.model_selector = Tk.OptionMenu(self.group_model, self.selected_model, *AVAILABLE_MODELS)
         self.model_selector.pack(side="top", fill=Tk.BOTH)
 
+        # PHONEBOOK_TRANSFER_MODE = ["YES", "NO"]
+        # self.selected_pb_mode = Tk.StringVar(self)
+        # self.selected_pb_mode.set("YES") # default value
+
+        # Tk.Label(self.group_model, text="Transfer phonebook").pack(side="top", fill=Tk.BOTH)
+        # self.pb_mode_selector = Tk.OptionMenu(self.group_model, self.selected_pb_mode, *PHONEBOOK_TRANSFER_MODE)
+        # self.pb_mode_selector.pack(side="top", fill=Tk.BOTH)
+
+        self.pb_mode_var = Tk.IntVar()
+        self.pb_mode_selector = Tk.Checkbutton(self.group_model, text="Transfer phonebook", variable=self.pb_mode_var)
+        self.pb_mode_selector.pack(side="top", fill=Tk.BOTH)
+
         Tk.Label(self.group_model, text="Amount agents").pack(side="top", fill=Tk.BOTH)
         self.amount_agents = Tk.Spinbox(self.group_model, from_=3, to=100)
         self.amount_agents.delete(0,"end")

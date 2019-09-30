@@ -63,6 +63,7 @@ class Controller():
         self.selected_lie_factor = self.view.parampanel.lie_factor
         self.selected_amount_iterations = self.view.sidepanel.amount_iterations
         self.selected_amount_connectivity = self.view.parampanel.amount_connectivity
+        self.transfer_pb = self.view.parampanel.pb_mode_var
 
         self.callIdx = 0
 
@@ -116,19 +117,19 @@ class Controller():
         elif choice == 'MISTAKE':
             behavior = Behavior.MISTAKE
 
-        self.model=Model(amount_agents, MAX_SECRET, transfer_chance, protocol, phonebook, lie_factor, behavior)
+        transfer_pb = False
+        if self.transfer_pb.get():
+            transfer_pb = True
 
-        #after model has been set, initialize the phonebook
-        self.model.phonebook_connectivity = int(self.selected_amount_connectivity.get())
-        self.model.initialize_phonebook()
+        connectivity = int(self.selected_amount_connectivity.get())
+        self.model=Model(amount_agents, MAX_SECRET, transfer_chance, protocol, phonebook, lie_factor, behavior, connectivity, transfer_pb)
 
         #must happen after model is initialized
         if(phonebook == PhonebookType.CUSTOM_GRAPH):
             for a,b in edges_tuples:
                 self.model.phonebook[a].append(b)
                 self.model.phonebook[b].append(a)
-        #also update the graph in the model with the newly created graph
-        if(phonebook == PhonebookType.CUSTOM_GRAPH):
+            #also update the graph in the model with the newly created graph
             self.model.graph.clear()
             #add all defined nodes to the graph
             self.model.graph.add_nodes_from(list(range(self.model.amount_agents)))
