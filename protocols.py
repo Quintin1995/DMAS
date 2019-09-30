@@ -42,12 +42,9 @@ def choose_callers(model):
 
     # Call once
     elif protocol == Protocols.CO:
-        # Pick someone that still has someone in their phonebook
-        # For the call once protocol, the recipient is removed from the phonebook 
-        # Therefore, no additional constraints need to be made.
+        # Pick someone that still has someone in their phonebook that they have not called yet
         phonebook_calls = model.phonebook_calls
         possible_callers =  [agent for agent in range (amount_agents) if list(phonebook_calls[agent]).count(0) > 0]
-        pass
         
     # Token
     elif protocol == Protocols.TOK:
@@ -102,7 +99,7 @@ def update_phonebook(model, caller, receiver, phonebook, protocol):
     if protocol == Protocols.ANY:
         pass
     
-    # In call once, we remove the receiver from the caller's phonebook
+    # In call once, we set the corresponding call to 1 (call made)
     elif protocol == Protocols.CO:
         model.phonebook_calls[caller, receiver] = 1 
         pass
@@ -116,8 +113,6 @@ def update_phonebook(model, caller, receiver, phonebook, protocol):
     # The callable agents are determined based on the models call log.
     elif protocol == Protocols.SPI:
         pass
-
-    print(model.phonebook_calls)
 
 """
 An enum that signifies the direction of a call.
