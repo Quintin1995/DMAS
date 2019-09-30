@@ -23,7 +23,7 @@ class Model:
     Determines who can call who based on chosen protocol / phonebook initialization.
     Keeps track of who calls who.
     """
-    def __init__ (self, amount_agents, amount_secrets, transfer_chance, protocol, phonebooktype, lie_factor, behavior):
+    def __init__ (self, amount_agents, amount_secrets, transfer_chance, protocol, phonebooktype, lie_factor, behavior, phonebook_connectivity = 100):
         self.protocol           = protocol
         self.amount_agents      = amount_agents
         self.amount_secrets     = amount_secrets
@@ -33,7 +33,7 @@ class Model:
         self.secrets = list ()
         self.initialize_secrets()
         self.phonebook_type     = phonebooktype
-        self.phonebook_connectivity = 100
+        self.phonebook_connectivity = phonebook_connectivity
         self.initialize_phonebook()
         self.phonebook_calls = list() # used for the CO protocol
         self.initialize_phonebook_calls()
@@ -42,6 +42,8 @@ class Model:
         self.state              = State.RUN
         self.summed_knowledge   = list()
         self.behavior           = behavior
+        self.exchange_phonebooks = True # transfer phonenumbers during exchange of secrets
+        
     """
     Initializes the global list of secrets.
     """
@@ -83,6 +85,7 @@ class Model:
         self.phonebook_calls = np.zeros ((self.amount_agents, self.amount_agents))
         for agent_idx in range (self.amount_agents):
             current_phonebook = self.phonebook[agent_idx]
+            print("current_phonebook: ", current_phonebook)
             for target_idx in range (self.amount_agents):
                 if target_idx == agent_idx: # agent can't call itself
                     self.phonebook_calls[agent_idx, target_idx] = 1 # set to already called instead of impossible to call
@@ -90,7 +93,15 @@ class Model:
                                                                     # new phonenumbers
                 elif target_idx not in current_phonebook:
                     self.phonebook_calls[agent_idx, target_idx] = -1 # set to not possible to call (yet)
-                
+    
+
+    """
+    Reset phonebook and phonebook calls with given connectivity
+    """
+    def reset_phonebook(self, connectivity = 100):
+        self.phonebook_connectivity = connectivity
+        self.initialize_phonebook()
+        self.initialize_phonebook_calls()
 
     """
     Does one more iteration of the gossip model making a call between two agents,
@@ -110,11 +121,20 @@ class Model:
     """
     def call (self, caller, receiver):
         backup_receiver = deepcopy(receiver)
+        if self.exchange_phonebooks:
+            self.transfer_phonenumbers(caller, receiver)
         self.transfer_secrets(caller, backup_receiver)
         self.transfer_secrets(receiver, caller)
         self.call_log.append(tuple((caller, receiver)))
         self.calls_made += 1
         self.summed_knowledge.append(self.get_sum_known_secrets())
+
+        ## debug
+        print("\nCall: ",  self.calls_made)
+        print(caller,  " called ",  receiver, "\n")
+        print(self.phonebook_calls)
+        print()
+        print(self.phonebook)
 
     """
     Gets the current prediction that an agent has for the secret number of a target agent.
@@ -166,6 +186,27 @@ class Model:
                             self.secrets[receiver][target_agent][random_knowledge] += self.lie_factor
                         else:
                             self.secrets[receiver][target_agent][random_knowledge] += float(self.secrets[sender][target_agent][random_knowledge])/sum(self.secrets[sender][target_agent])
+
+    """
+    Transfer phonenumbers from sender to receiver and back
+    Add new numbers to the corresponding phonebook and 
+    set numbers to callable
+    """
+    def transfer_phonenumbers(self, sender, receiver):
+        self.transfer_phonenumbers_helper(sender, receiver)
+        self.transfer_phonenumbers_helper(receiver, sender)
+
+    """
+    Helper function for transfer_phonenumbers
+    Transfers phonenumbers one-way
+    """
+    def transfer_phonenumbers_helper(self, sender, receiver):
+        for number in self.phonebook[sender]:
+            if self.phonebook_calls[receiver, number] == -1: # number not yet callable
+                self.phonebook_calls[receiver, number] = 0 # set number callable and not yet called
+                self.phonebook[sender].append(number) # add number to phonebook
+                print("set ", number, " to callabel for ", receiver)
+
     """
     Prints to the console, the actual secrets that agents have.
     """
@@ -229,7 +270,7 @@ class Model:
         self.calls_made = 0
         self.secrets = list ()
         self.initialize_secrets()
-        self.initialize_phonebook()
+        self.reset_phonebook() # also sets connectivity back to 100%
         self.state              = State.RUN
         self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
         self.graph              = nx.Graph()

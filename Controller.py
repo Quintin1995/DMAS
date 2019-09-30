@@ -116,11 +116,8 @@ class Controller():
         elif choice == 'MISTAKE':
             behavior = Behavior.MISTAKE
 
-        self.model=Model(amount_agents, MAX_SECRET, transfer_chance, protocol, phonebook, lie_factor, behavior)
-
-        #after model has been set, initialize the phonebook
-        self.model.phonebook_connectivity = int(self.selected_amount_connectivity.get())
-        self.model.initialize_phonebook()
+        connectivity = int(self.selected_amount_connectivity.get())
+        self.model=Model(amount_agents, MAX_SECRET, transfer_chance, protocol, phonebook, lie_factor, behavior, connectivity)
 
         #must happen after model is initialized
         if(phonebook == PhonebookType.CUSTOM_GRAPH):
