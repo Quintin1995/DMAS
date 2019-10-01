@@ -68,8 +68,6 @@ class Controller():
         self.selected_amount_connectivity = self.view.parampanel.amount_connectivity
         self.transfer_pb = self.view.parampanel.pb_mode_var
 
-        self.callIdx = 0
-
     def run(self):
         self.root.title("DMAS - GOSSIP PROTOCOLS")
         self.root.deiconify()
@@ -263,26 +261,16 @@ class Controller():
         self.update_info()
 
 
-    #format a the call log to be shown to the user.
     def get_formated_call(self, amount):
-        #take last calls from call log
-        calls_list = self.model.call_log[len(self.model.call_log)-amount:len(self.model.call_log)]
+        self.view.leftpanel.model_call_log_textarea.delete('1.0', Tk.END)
         formated_call = ""
-        #loop over call list
-        for idx, call in enumerate(calls_list):
-            #extract call
+        call_log_list = list(enumerate(self.model.call_log))
+        for idx, call in reversed(call_log_list):
             a,b = call
-            if amount > self.model.calls_made:
-                amount = self.model.calls_made
-            #iteration = int(self.model.calls_made - amount + idx + 1)
-            # if iteration < 0:
-            #     iteration = self.model.calls_made
+            formated_call += "Call " + str(idx+1) + ": Agent " + str(a) + " calls Agent " + str(b) + "\n"
 
-            self.callIdx += 1 # increment callIdx
-            # append current call to log
-            formated_call += "Call " + str(self.callIdx) + ": Agent " + str(a) + " calls Agent " + str(b) + "\n" 
-            
-        return formated_call
+        return formated_call            
+
 
     def get_agent_color (self, agent_idx):
         known_secrets  = self.model.get_amount_known_secrets(agent_idx)
