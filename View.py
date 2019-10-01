@@ -1,12 +1,13 @@
-import tkinter as Tk
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import numpy as np
+#other libraries
 from itertools import permutations
-import sys
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-from tkinter import scrolledtext
 import networkx as nx
+import numpy as np
+import sys
+import tkinter as Tk
+from tkinter import scrolledtext
 
 
 class View(Tk.Frame):

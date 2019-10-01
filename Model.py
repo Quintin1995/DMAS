@@ -1,12 +1,14 @@
-from protocols import Protocols, NoPossibleCallersError
-from phonebook import PhonebookType
-from phonebook import *
-import protocols
-import random
+#other libraries
+from copy import deepcopy
 from enum import Enum
 import networkx as nx
-from copy import deepcopy
 import numpy as np
+import random
+
+#our libraries
+import protocols
+from phonebook import *
+from protocols import Protocols, NoPossibleCallersError
 
 class State(Enum):
     RUN         = 1
