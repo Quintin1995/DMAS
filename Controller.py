@@ -1,18 +1,21 @@
-from Model import *
-import tkinter as Tk
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import numpy as np
+#other libraries
 from itertools import permutations
-import sys
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+from matplotlib.lines import Line2D
 import matplotlib.pyplot as plt
+import matplotlib.style as style
+import networkx as nx
+import numpy as np
+import sys
+import tkinter as Tk
+from tkinter import messagebox
+
+#our libraries
+from Model import *
 from protocols import *
 from phonebook import *
-import networkx as nx
 from View import View, SidePanel
-import matplotlib.style as style
-from matplotlib.lines import Line2D
-from tkinter import messagebox
 
 style.use('seaborn-bright')
 
