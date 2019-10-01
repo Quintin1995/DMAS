@@ -1,7 +1,7 @@
-import random
 from enum import Enum
 import matplotlib.pyplot as plt
 import networkx as nx
+import random
 """
 Phonebook initialization type, determines who can call who.
 
