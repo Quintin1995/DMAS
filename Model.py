@@ -100,8 +100,8 @@ class Model:
     def initialize_phonebook_calls (self):
         self.phonebook_calls = np.zeros ((self.amount_agents, self.amount_agents))
         for agent_idx in range (self.amount_agents):
-            # current_phonebook = self.phonebook[agent_idx]
-            print("current_phonebook: ", current_phonebook)
+            current_phonebook = self.phonebook[agent_idx]
+            # print("current_phonebook: ", current_phonebook) # debug
             for target_idx in range (self.amount_agents):
                 if target_idx == agent_idx: # agent can't call itself
                     self.phonebook_calls[agent_idx, target_idx] = 1 # set to already called instead of impossible to call

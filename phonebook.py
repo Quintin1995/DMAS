@@ -74,7 +74,7 @@ def generate_phonebook (phonebook_type, amount_agents, connectivity):
         for agent_idx in range (amount_agents):
             phonebook.append(list())
 
-    print(phonebook)
+    # print(phonebook)
     return phonebook
 
 
