@@ -42,7 +42,8 @@ class LeftPanel(Tk.Frame):
         self.group_info.pack(side="top", fill=Tk.BOTH)
         
         #Protocol status text
-        self.model_state_lbl = Tk.Label(self.group_info, text="Protocol running", fg="blue")
+        self.model_state_lbl = Tk.Label(self.group_info, text="State: Running", fg="blue")
+        self.model_state_lbl.config(font=("Courier", 33))
         self.model_state_lbl.pack(side="top", fill=Tk.BOTH)
 
         #amount calls made txt
