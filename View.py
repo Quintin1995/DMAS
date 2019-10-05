@@ -153,9 +153,11 @@ class ParamPanel(Tk.Frame):
 
         #graph creator panel
         info_string = "Graph creator, on tuples (without paranthesis)\n Example:\n 0,1\n1,0\n2,0" + "\nSet phonebook to CUSTOM GRAPH" + "\nClick on set model"
-        self.model_param_pnl_graph_creator_lbl = Tk.Label(self.group_model, text=info_string, fg="red")
+        new_info_string = "Graph Creator, example:\n ([[0,1],[1,2],[2,3],[3]],[[0],[1],[2],[3]])\nSet phonebook to CUSTOM GRAPH\nSource: https://w4eg.de/malvin/illc/webgossip"
+        self.model_param_pnl_graph_creator_lbl = Tk.Label(self.group_model, text=new_info_string, fg="red")
         self.model_param_pnl_graph_creator_lbl.pack(side="top", fill=Tk.BOTH)
         self.model_param_pnl_graph_creator_textarea = Tk.Text(self.group_model, height=10, width=20)
+        self.model_param_pnl_graph_creator_textarea.insert(Tk.END, "([[0,1],[1,2],[2,3],[3]],[[0],[1],[2],[3]])")
         self.model_param_pnl_graph_creator_textarea.pack(side="top", fill=Tk.BOTH)
 
         self.resetButton = Tk.Button(self.group_model, text="Set model")

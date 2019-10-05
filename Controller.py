@@ -1,5 +1,6 @@
 #other libraries
 from itertools import permutations
+import json
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
@@ -7,6 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.style as style
 import networkx as nx
 import numpy as np
+import re
 import sys
 import tkinter as Tk
 from tkinter import messagebox
@@ -105,9 +107,13 @@ class Controller():
         elif choice == "CUSTOM GRAPH":
             phonebook = PhonebookType.CUSTOM_GRAPH
             raw_graph_string = self.view.parampanel.retrieve_input_graph()
-            edges_tuples = self.get_edges_from_raw_graph_string(raw_graph_string)
+            edges_tuples, amount_agents = self.parse_gossip_state(raw_graph_string)
 
-        amount_agents = int(self.selected_amount_agents.get())
+        #in case of a custom graph we do not want to set the amount of agents
+        # because the amount of agents is already set in the graph creator, 
+        # when the parse_gossip_state has been called.
+        if choice != "CUSTOM GRAPH" :
+            amount_agents = int(self.selected_amount_agents.get())
         transfer_chance = int(self.selected_transfer_chance.get())
         lie_factor = float(self.selected_lie_factor.get())
 
@@ -143,23 +149,22 @@ class Controller():
         self.draw_graph(event)
         self.update_info()
 
-    
-    #takes in a raw unformated string from the GUI, and will make a list of tuples,
-    #these tuples are edges for the graph to be created
-    def get_edges_from_raw_graph_string(self, raw_graph_string):
-        tuple_list = list()
-        lazy_tuples = raw_graph_string.split('\n')      #lazy, as in there are no parenthesis required for this tuple.
-        for lazy_tuple in lazy_tuples:
-            lazy_tuple = lazy_tuple.replace('(', '')
-            lazy_tuple = lazy_tuple.replace(')', '')
-            nodes_of_edge = lazy_tuple.split(',')
-            a = int(nodes_of_edge[0])
-            b = int(nodes_of_edge[1])
-            if( (a > self.model.amount_agents-1) or (b > self.model.amount_agents-1) ):
-                messagebox.showerror("Index Error", "Trying to reference an Agent that does not exist")
-                return list()
-            tuple_list.append((a, b))
-        return tuple_list
+
+    def parse_gossip_state(self, raw_graph_string):
+        graph = list()
+        try:
+            intermediate_string = raw_graph_string.replace(')', ']')
+            intermediate_string = intermediate_string.replace('(', '[')
+            edges_list, nodes_list = json.loads(intermediate_string)
+            for current_node, edge_list in enumerate(edges_list):
+                for node in edge_list:
+                    graph.append((current_node,node))
+        except:
+            messagebox.showerror("Parsing Error", "Be sure to give correct syntax.")
+            return list((0,0)), 0
+
+        return graph, len(nodes_list)
+
   
     def draw_graph(self,event):
         #axis is the first plot with the graph in it.
