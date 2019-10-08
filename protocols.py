@@ -46,18 +46,19 @@ def choose_callers(model):
         phonebook_calls = model.phonebook_calls
         possible_callers =  [agent for agent in range (amount_agents) if list(phonebook_calls[agent]).count(0) > 0]
         
-    # Token
+    # Token: Each agent starts with a token, when you call someone you give your token away. Agents can only call if they have a token
     elif protocol == Protocols.TOK:
         # From all agents that have someone in their phonebook, remove all the 
         # agents for which their last call was FROM them
         possible_callers = [agent for agent in possible_callers if last_call_direction(agent, call_log) != CallDirection.FROM]
 
-    # SPIder in the web
+    # SPIder in the web: Each agent starts with a token, when you call someone you take their token. Agents can only call if they have a token
     elif protocol == Protocols.SPI:
         # From all agents that have someone in their phonebook, remove all the 
         # agents for which their last call was TO them
         possible_callers = [agent for agent in possible_callers if last_call_direction(agent, call_log) != CallDirection.TO]
 
+    # Learn New Secrets: Only call those agents of whom you have not learned their secret
     elif protocol == Protocols.LNS:
         eligible_receivers_lns = list()
         for potential_caller in range(amount_agents):
