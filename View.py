@@ -22,7 +22,7 @@ class View(Tk.Frame):
 
         self.leftpanel=LeftPanel(self)
 
-        self.exppanel = ExpPanel(self.sidepanel)
+        self.exppanel = Experiment_Panel(self.leftpanel)
         self.parampanel = ParamPanel(self.sidepanel)
 
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
@@ -57,6 +57,34 @@ class LeftPanel(Tk.Frame):
         self.model_call_log_textarea.pack(side="top", fill=Tk.BOTH)
 
 
+class Experiment_Panel(Tk.Frame):
+    def __init__(self, master):
+        Tk.Frame.__init__(self, master)
+        self.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=1)
+
+        #Frame for fields
+        self.exp_params_frame = Tk.LabelFrame(self, text="Experiment Parameters\nThis will not render anything in the UI", padx=5, pady=5)
+        self.exp_params_frame.pack(side="top", fill=Tk.BOTH)
+
+        #Maximum amount iterations that will be allowed
+        Tk.Label(self.exp_params_frame, text="max iterations allowed").pack(side="top", fill=Tk.BOTH)
+        self.max_allowed_iters = Tk.Spinbox(self.exp_params_frame, from_=1, to=1000000)
+        self.max_allowed_iters.delete(0,"end")
+        self.max_allowed_iters.insert(0,"9999")
+        self.max_allowed_iters.pack(side="top", fill=Tk.BOTH)
+
+        #The amount of experiments that will be performed
+        Tk.Label(self.exp_params_frame, text="Experiment Count").pack(side="top", fill=Tk.BOTH)
+        self.experi_count = Tk.Spinbox(self.exp_params_frame, from_=1, to=1000000)
+        self.experi_count.delete(0,"end")
+        self.experi_count.insert(0,"100")
+        self.experi_count.pack(side="top", fill=Tk.BOTH)
+
+        #Experiment run button
+        self.run_experi_butn = Tk.Button(self.exp_params_frame, text="Run Experiments")
+        self.run_experi_butn.pack(side="top",fill=Tk.BOTH)
+ 
+
 
 class SidePanel(Tk.Frame):
     def __init__(self, master):
@@ -76,11 +104,6 @@ class SidePanel(Tk.Frame):
         self.iterXBut = Tk.Button(self.group_run, text="Do N iterations")
         self.iterXBut.pack(side="top",fill=Tk.BOTH)
 
-
-class ExpPanel(Tk.Frame):
-    def __init__(self, master):
-        Tk.Frame.__init__(self, master)
-        self.pack(side=Tk.BOTTOM, fill=Tk.BOTH, expand=1)
 
 
 class ParamPanel(Tk.Frame):
