@@ -271,7 +271,7 @@ class Model:
         for iteration in range (iterations):
             if len(self.get_experts()) == self.amount_agents:
                 self.state = State.DONE
-                print(self.state)
+                # print(self.state)
                 break
             try: 
                 self.next_call()

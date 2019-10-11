@@ -30,7 +30,17 @@ BEHAVIOR        = Behavior.LIE
 
 model=Model(AMOUNT_AGENTS, MAX_SECRET, TRANSFER_CHANCE, Protocols.ANY, PhonebookType.ALL, LIE_FACTOR, BEHAVIOR)
 
-results = model.do_experiment(10, 9999)
+results = model.do_experiment(10000, 9999)
 
 for iteration, result in enumerate(results):
     print("Trial {}: {}".format(iteration, result))
+
+print (results)
+
+plot_data = [v for (s, v) in results if s == 'DONE']
+
+print (plot_data)
+
+plt.hist(plot_data, bins=25)
+plt.ylabel('Occurences')
+plt.show()
