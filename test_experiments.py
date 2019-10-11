@@ -40,7 +40,6 @@ print (results)
 plot_data = [v for (s, v) in results if s == 'DONE']
 
 print (plot_data)
-plot_data_mean = sum(plot_data) / float(len(plot_data))
 plot_data_std  = np.std(plot_data)
 # plt.hist(plot_data, bins=25, edgecolor='k', alpha=0.65)
 # plt.ylabel('Occurences')
@@ -53,9 +52,11 @@ fig, ax = plt.subplots()
 n, bins, patches = ax.hist(plot_data, 25, density=1, edgecolor='k', alpha=0.65)
 
 # add a 'best fit' line
-y = ((1 / (np.sqrt(2 * np.pi) * plot_data_std)) *
-     np.exp(-0.5 * (1 / plot_data_std * (bins - plot_data_mean))**2))
-ax.plot(bins, y, '--r')
+if (len(plot_data) > 0):
+    plot_data_mean = sum(plot_data) / float(len(plot_data))
+    y = ((1 / (np.sqrt(2 * np.pi) * plot_data_std)) *
+        np.exp(-0.5 * (1 / plot_data_std * (bins - plot_data_mean))**2))
+    ax.plot(bins, y, '--r')
 ax.set_xlabel('Smarts')
 # Tweak spacing to prevent clipping of ylabel
 fig.tight_layout()

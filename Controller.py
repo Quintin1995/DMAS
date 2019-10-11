@@ -10,8 +10,10 @@ import networkx as nx
 import numpy as np
 import re
 import sys
+import time
 import tkinter as Tk
 from tkinter import messagebox
+
 
 #our libraries
 from Model import *
@@ -313,26 +315,32 @@ class Controller():
         plot_data = [v for (s, v) in results if s == 'DONE']
 
         print (plot_data)
-        plot_data_mean = sum(plot_data) / float(len(plot_data))
         plot_data_std  = np.std(plot_data)
         # plt.hist(plot_data, bins=25, edgecolor='k', alpha=0.65)
         # plt.ylabel('Occurences')
         # plt.show()
 
-        fig, ax = plt.subplots()
 
         # the histogram of the data
-        n, bins, patches = ax.hist(plot_data, 25, density=1, edgecolor='k', alpha=0.65)
-        plt.axvline(sum(plot_data)/float(len(plot_data)), color='k', linestyle='dashed', linewidth=1)
+        if len(plot_data) > 0:
+            fig, ax = plt.subplots()
+            n, bins, patches = ax.hist(plot_data, 25, density=1, edgecolor='k', alpha=0.65)
+            plot_data_mean = sum(plot_data) / float(len(plot_data))
+            plt.axvline(sum(plot_data)/float(len(plot_data)), color='k', linestyle='dashed', linewidth=1)
 
-        # add a 'best fit' line
-        y = ((1 / (np.sqrt(2 * np.pi) * plot_data_std)) *
-            np.exp(-0.5 * (1 / plot_data_std * (bins - plot_data_mean))**2))
-        ax.plot(bins, y, '--r')
-        ax.set_xlabel('Smarts')
-        # Tweak spacing to prevent clipping of ylabel
-        fig.tight_layout()
-        plt.show()
+            # add a 'best fit' line
+            y = ((1 / (np.sqrt(2 * np.pi) * plot_data_std)) *
+                np.exp(-0.5 * (1 / plot_data_std * (bins - plot_data_mean))**2))
+            ax.plot(bins, y, '--r')
+
+            ax.set_xlabel('Smarts')
+            # Tweak spacing to prevent clipping of ylabel
+            fig.tight_layout()
+            plt.show()
+
+            fig, ax = plt.subplots()
+            ax.boxplot(plot_data)
+            plt.show()
 
         categories = ['Success', 'Failed', 'Did not finish']
         values = list()
@@ -346,6 +354,30 @@ class Controller():
             plt.text(rect.get_x() + rect.get_width()/2.0, height, '%10.2f%%' % (int(height)/float(len(results))), ha='center', va='bottom')
         plt.show()
 
-        fig, ax = plt.subplots()
-        ax.boxplot(plot_data)
-        plt.show()
+        self.write_results_to_csv(results, "/home/0xC4/Documents/test_output.csv")
+
+    def write_results_to_csv (self, results, csv_path):
+        # Collect information
+        amount_agents = self.model.amount_agents
+        model_type    = self.model.protocol.name
+        phonebook     = PhonebookType(self.model.phonebook_type).name
+        current_time  = time.strftime("%X_%x")
+        # Open the file for writing
+        file = open(csv_path, 'w+')
+
+        # Write file header
+        file.write("trial;model_type;phonebook;amount_agents;iterations;state;time\n")
+
+        # Process the results
+        for iteration, result in enumerate(results):
+            state, calls_made = result
+            file.write("{};".format(iteration))
+            file.write("{};".format(model_type))
+            file.write("{};".format(phonebook))
+            file.write("{};".format(amount_agents))
+            file.write("{};".format(calls_made))
+            file.write("{};".format(state))
+            file.write("{}\n".format(current_time))
+        
+        # Close file
+        file.close()
