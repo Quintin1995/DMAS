@@ -303,7 +303,8 @@ class Controller():
 
     #performs the experiments
     def Btn_perform_experiments (self, event):
-        self.create_experiment_folder(self.view.exppanel.data_folder_name_textarea.get(1.0, 'end-1c'))
+        experiment_folder = self.view.exppanel.data_folder_name_textarea.get(1.0, 'end-1c')
+        self.create_experiment_folder(experiment_folder)
         amount_experiments = int(self.amount_experiments.get())
         max_iters = int(self.max_amount_iters_experiments.get())
         
@@ -314,6 +315,8 @@ class Controller():
 
         print (results)
 
+        self.create_hist_plot(results, experiment_folder, "hist.png")
+
         plot_data = [v for (s, v) in results if s == 'DONE']
 
         print (plot_data)
@@ -323,6 +326,42 @@ class Controller():
         # plt.show()
 
 
+        
+        categories = ['Success', 'Failed', 'Did not finish']
+        values = list()
+        values.append(len(list([v for s, v in results if s == 'DONE'])))
+        values.append(len(list([v for s, v in results if s == 'NO_CALLS'])))
+        values.append(len(list([v for s, v in results if s == 'RUN'])))
+        fig, ax = plt.subplots()
+        bar = ax.bar(categories, values, alpha=0.4)
+        for rect in bar:
+            height = rect.get_height()
+            plt.text(rect.get_x() + rect.get_width()/2.0, height, '%10.2f%%' % (int(height)/float(len(results))), ha='center', va='bottom')
+        plt.show()
+
+        fig, ax = plt.subplots()
+        ax.boxplot(plot_data)
+        plt.show()
+
+        self.write_results_to_csv(results, "/home/0xC4/Documents/test_output.csv")
+
+
+    def create_boxplot(self, results, path, filename):
+        tot_path = os.path.join("data", path, filename) 
+
+
+    def create_hist_plot(self, results, path, filename):
+        tot_path = os.path.join("data", path, filename)
+        
+        plot_data = [v for (s, v) in results if s == 'DONE']
+
+        print (plot_data)
+        plot_data_std  = np.std(plot_data)
+        # plt.hist(plot_data, bins=25, edgecolor='k', alpha=0.65)
+        # plt.ylabel('Occurences')
+        # plt.show()
+
+        
         # the histogram of the data
         if len(plot_data) > 0:
             fig, ax = plt.subplots()
@@ -342,25 +381,9 @@ class Controller():
 
             fig, ax = plt.subplots()
             ax.boxplot(plot_data)
-            plt.show()
+            plt.savefig(tot_path)
 
-        categories = ['Success', 'Failed', 'Did not finish']
-        values = list()
-        values.append(len(list([v for s, v in results if s == 'DONE'])))
-        values.append(len(list([v for s, v in results if s == 'NO_CALLS'])))
-        values.append(len(list([v for s, v in results if s == 'RUN'])))
-        fig, ax = plt.subplots()
-        bar = ax.bar(categories, values, alpha=0.4)
-        for rect in bar:
-            height = rect.get_height()
-            plt.text(rect.get_x() + rect.get_width()/2.0, height, '%10.2f%%' % (int(height)/float(len(results))), ha='center', va='bottom')
-        plt.show()
-
-        fig, ax = plt.subplots()
-        ax.boxplot(plot_data)
-        plt.show()
-
-        self.write_results_to_csv(results, "/home/0xC4/Documents/test_output.csv")
+        
 
     #creates a new experiment folder in the data directory
     def create_experiment_folder(self, path):
@@ -368,6 +391,7 @@ class Controller():
   
         if not os.path.exists(tot_path):
             os.makedirs(tot_path)
+
 
     def write_results_to_csv (self, results, csv_path):
         # Collect information
