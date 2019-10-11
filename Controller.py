@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.style as style
 import networkx as nx
 import numpy as np
+import os
 import re
 import sys
 import tkinter as Tk
@@ -300,9 +301,10 @@ class Controller():
 
     #performs the experiments
     def Btn_perform_experiments (self, event):
+        self.create_experiment_folder(self.view.exppanel.data_folder_name_textarea.get(1.0, 'end-1c'))
         amount_experiments = int(self.amount_experiments.get())
         max_iters = int(self.max_amount_iters_experiments.get())
-
+        
         results = self.model.do_experiment(amount_experiments, max_iters)
 
         for iteration, result in enumerate(results):
@@ -349,3 +351,10 @@ class Controller():
         fig, ax = plt.subplots()
         ax.boxplot(plot_data)
         plt.show()
+
+    #creates a new experiment folder in the data directory
+    def create_experiment_folder(self, path):
+        tot_path = os.path.join("data", path) 
+  
+        if not os.path.exists(tot_path):
+            os.makedirs(tot_path)

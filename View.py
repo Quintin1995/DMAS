@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import sys
+import time
 import tkinter as Tk
 from tkinter import scrolledtext
 
@@ -80,9 +81,20 @@ class Experiment_Panel(Tk.Frame):
         self.experi_count.insert(0,"100")
         self.experi_count.pack(side="top", fill=Tk.BOTH)
 
+        #file name of folder that results will be stored
+        self.data_folder_name_lbl = Tk.Label(self.exp_params_frame, text="Experiment Folder Name", fg="black")
+        self.data_folder_name_lbl.pack(side="top", fill=Tk.BOTH)
+        self.data_folder_name_textarea = Tk.Text(self.exp_params_frame, height=1, width=35)
+        self.data_folder_name_textarea.pack(side="top", fill=Tk.BOTH)
+        #set init string for this textarea
+        current_time = time.strftime('%X_%x').replace('-', '_')
+        default_folder = "Experiment_{}".format(current_time)        #put current time and date into the folder
+        self.data_folder_name_textarea.insert(Tk.END, default_folder )
+
         #Experiment run button
         self.run_experi_butn = Tk.Button(self.exp_params_frame, text="Run Experiments")
         self.run_experi_butn.pack(side="top",fill=Tk.BOTH)
+
  
 
 
