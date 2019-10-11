@@ -57,18 +57,29 @@ class Controller():
         self.draw_graph(0)
         self.draw_line(0)
 
+        #set button functions
+        self.view.exppanel.run_experi_butn.bind("<Button>", self.Btn_perform_experiments)
         self.view.sidepanel.iterBut.bind("<Button>", self.Btn_Do_iterations)
         self.view.sidepanel.iterXBut.bind("<Button>", self.Btn_DoN_iterations)
         self.view.parampanel.resetButton.bind("<Button>", self.reset_model)
+
+        #get values from parampanel
         self.selected_model = self.view.parampanel.selected_model
         self.selected_phonebook = self.view.parampanel.selected_phonebook
         self.selected_behavior = self.view.parampanel.selected_behavior
         self.selected_amount_agents = self.view.parampanel.amount_agents
         self.selected_transfer_chance = self.view.parampanel.transfer_chance
         self.selected_lie_factor = self.view.parampanel.lie_factor
-        self.selected_amount_iterations = self.view.sidepanel.amount_iterations
         self.selected_amount_connectivity = self.view.parampanel.amount_connectivity
-        self.transfer_pb = self.view.parampanel.pb_mode_var
+        self.transfer_pb = self.view.parampanel.pb_mode_var     #pb = probability
+
+        #get values from sidepanel
+        self.selected_amount_iterations = self.view.sidepanel.amount_iterations
+
+        #get values from experiment panel
+        self.amount_experiments = self.view.exppanel.experi_count
+        self.max_amount_iters_experiments = self.view.exppanel.max_allowed_iters
+
 
     def run(self):
         self.root.title("DMAS - GOSSIP PROTOCOLS")
@@ -285,3 +296,11 @@ class Controller():
         
     def get_agent_colors (self):
         return [self.get_agent_color(agent_idx) for agent_idx in range(self.model.amount_agents)]
+
+
+    #performs the experiments
+    def Btn_perform_experiments (self, event):
+        amount_experiments = int(self.amount_experiments.get())
+        max_iters = int(self.max_amount_iters_experiments.get())
+        results = self.model.do_experiment(amount_experiments, max_iters)
+
