@@ -367,8 +367,10 @@ class Controller():
         bar = ax.bar(categories, values, alpha=0.4)
         for rect in bar:
             height = rect.get_height()
-            plt.text(rect.get_x() + rect.get_width()/2.0, height, '%10.2f%%' % (int(height)/float(len(results))), ha='center', va='bottom')
+            plt.text(rect.get_x() + rect.get_width()/2.0, height, '%10.2f%%' % ((int(height)/float(len(results))) * 100.0), ha='center', va='bottom')
         # plt.show()
+
+        plt.title("Experiment results")
 
         fig.savefig(tot_path)
 
@@ -381,10 +383,12 @@ class Controller():
         fig, ax = plt.subplots()
         ax.boxplot(plot_data)
 
+        ax.axes.get_xaxis().set_visible(False) # disable x-axis (it would only show a 1)
+
+        ax.set_ylabel("Calls made")
+        plt.title("Boxplot of calls made")
+
         fig.savefig(tot_path)
-
-
-
 
 
     def create_hist_plot(self, results, path, filename):
@@ -405,6 +409,8 @@ class Controller():
             fig, ax = plt.subplots()
             n, bins, patches = ax.hist(plot_data, 25, density=1, edgecolor='k', alpha=0.65)
             plot_data_mean = sum(plot_data) / float(len(plot_data))
+
+            # add median line
             plt.axvline(sum(plot_data)/float(len(plot_data)), color='k', linestyle='dashed', linewidth=1)
 
             # add a 'best fit' line
@@ -412,14 +418,15 @@ class Controller():
                 np.exp(-0.5 * (1 / plot_data_std * (bins - plot_data_mean))**2))
             ax.plot(bins, y, '--r')
 
-            ax.set_xlabel('Smarts')
+            ax.set_xlabel('Calls made')
+            ax.set_ylabel('Frequency of occurence')
+            plt.title("Histogram of calls made")
+            ax.legend(["median", "best fit"])
             # Tweak spacing to prevent clipping of ylabel
             fig.tight_layout()
             # plt.show()
 
-            # fig, ax = plt.subplots()
-            # ax.boxplot(plot_data)
-            fig.savefig(tot_path)
+            fig.savefig(tot_path) # save plot
 
         
 
