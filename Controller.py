@@ -42,8 +42,9 @@ LINE_PLOT_TITLE = "Sum of agent knowledge progression"
 LINE_PLOT_YLAB  = "Sum of known agent secrets"
 LINE_PLOT_XLAB  = "Amount of calls made"
 
-# hist generation
-HIST_FN = "test_hist.png"
+# plot generation
+PLOT_FN = "test" # start of the plot filename, will be extended with plot types and image type
+IMAGE_TYPE = ".png"
 
 # csv file generation
 CSV_FN = "test_output.csv" # file name, will be stored in experiment folder
@@ -323,20 +324,40 @@ class Controller():
         for iteration, result in enumerate(results):
             print("Trial {}: {}".format(iteration, result))
 
-        print (results)
+        # print (results)
 
-        self.create_hist_plot(results, experiment_folder, HIST_FN)
+        self.create_plots(results, experiment_folder)
 
-        plot_data = [v for (s, v) in results if s == 'DONE']
+        plot_data = [numturns for (exit_status, numturns) in results if exit_status == 'DONE'] # only plot succesful runs
 
-        print (plot_data)
-        plot_data_std  = np.std(plot_data)
+        # print (plot_data)
+        plot_data_std  = np.std(plot_data) # std deviation
+
         # plt.hist(plot_data, bins=25, edgecolor='k', alpha=0.65)
         # plt.ylabel('Occurences')
         # plt.show()
 
 
         
+        
+
+        # fig, ax = plt.subplots()
+        # ax.boxplot(plot_data)
+        # plt.show()
+
+
+        self.write_results_to_csv(results, experiment_folder, CSV_FN)
+
+    def create_plots(self, results, path):
+        self.create_barplot(results, path, PLOT_FN + "_barplot" + IMAGE_TYPE)
+        self.create_boxplot(results, path, PLOT_FN + "_boxplot" + IMAGE_TYPE)
+        self.create_hist_plot(results, path, PLOT_FN + "_hist" + IMAGE_TYPE)
+
+
+
+    def create_barplot(self, results, path, filename):
+        tot_path = os.path.join("data", path, filename)
+
         categories = ['Success', 'Failed', 'Did not finish']
         values = list()
         values.append(len(list([v for s, v in results if s == 'DONE'])))
@@ -347,24 +368,30 @@ class Controller():
         for rect in bar:
             height = rect.get_height()
             plt.text(rect.get_x() + rect.get_width()/2.0, height, '%10.2f%%' % (int(height)/float(len(results))), ha='center', va='bottom')
-        plt.show()
+        # plt.show()
 
-        fig, ax = plt.subplots()
-        ax.boxplot(plot_data)
-        plt.show()
+        fig.savefig(tot_path)
 
-
-        self.write_results_to_csv(results, experiment_folder, CSV_FN)
 
 
     def create_boxplot(self, results, path, filename):
         tot_path = os.path.join("data", path, filename) 
 
+        plot_data = [numturns for (exit_status, numturns) in results if exit_status == 'DONE'] # only plot succesful runs
+        fig, ax = plt.subplots()
+        ax.boxplot(plot_data)
+
+        fig.savefig(tot_path)
+
+
+
+
 
     def create_hist_plot(self, results, path, filename):
         tot_path = os.path.join("data", path, filename)
         
-        plot_data = [v for (s, v) in results if s == 'DONE']
+        plt.figure() # init new figure
+        plot_data = [numturns for (exit_status, numturns) in results if exit_status == 'DONE'] # only plot succesful runs
 
         print (plot_data)
         plot_data_std  = np.std(plot_data)
@@ -388,11 +415,11 @@ class Controller():
             ax.set_xlabel('Smarts')
             # Tweak spacing to prevent clipping of ylabel
             fig.tight_layout()
-            plt.show()
+            # plt.show()
 
-            fig, ax = plt.subplots()
-            ax.boxplot(plot_data)
-            plt.savefig(tot_path)
+            # fig, ax = plt.subplots()
+            # ax.boxplot(plot_data)
+            fig.savefig(tot_path)
 
         
 
