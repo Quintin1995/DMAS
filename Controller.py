@@ -9,6 +9,7 @@ import matplotlib.style as style
 import networkx as nx
 import numpy as np
 import os
+from os.path import join
 import re
 import sys
 import time
@@ -40,6 +41,15 @@ EDGE_COLOR   = '#00FFFF'
 LINE_PLOT_TITLE = "Sum of agent knowledge progression"
 LINE_PLOT_YLAB  = "Sum of known agent secrets"
 LINE_PLOT_XLAB  = "Amount of calls made"
+
+# hist generation
+HIST_FN = "test_hist.png"
+
+# csv file generation
+CSV_FN = "test_output.csv" # file name, will be stored in experiment folder
+
+
+
 
 class Controller():
     def __init__(self):
@@ -315,7 +325,7 @@ class Controller():
 
         print (results)
 
-        self.create_hist_plot(results, experiment_folder, "hist.png")
+        self.create_hist_plot(results, experiment_folder, HIST_FN)
 
         plot_data = [v for (s, v) in results if s == 'DONE']
 
@@ -343,7 +353,8 @@ class Controller():
         ax.boxplot(plot_data)
         plt.show()
 
-        self.write_results_to_csv(results, "/home/0xC4/Documents/test_output.csv")
+
+        self.write_results_to_csv(results, experiment_folder, CSV_FN)
 
 
     def create_boxplot(self, results, path, filename):
@@ -393,14 +404,16 @@ class Controller():
             os.makedirs(tot_path)
 
 
-    def write_results_to_csv (self, results, csv_path):
+    def write_results_to_csv (self, results, csv_path, filename):
+        tot_path = os.path.join("data", csv_path, filename)
+
         # Collect information
         amount_agents = self.model.amount_agents
         model_type    = self.model.protocol.name
         phonebook     = PhonebookType(self.model.phonebook_type).name
         current_time  = time.strftime("%X_%x")
         # Open the file for writing
-        file = open(csv_path, 'w+')
+        file = open(tot_path, 'w+')
 
         # Write file header
         file.write("trial;model_type;phonebook;amount_agents;iterations;state;time\n")
