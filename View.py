@@ -88,7 +88,7 @@ class Experiment_Panel(Tk.Frame):
         self.data_folder_name_textarea.pack(side="top", fill=Tk.BOTH)
         #set init string for this textarea
         current_time = time.strftime('%x_%X').replace('-', '_')
-        default_folder = "Experiment_{}".format(current_time)        #put current time and date into the folder
+        default_folder = "exp_{}".format(current_time)        #put current time and date into the folder
         self.data_folder_name_textarea.insert(Tk.END, default_folder )
 
         #Experiment run button
