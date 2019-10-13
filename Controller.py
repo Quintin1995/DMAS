@@ -453,7 +453,7 @@ class Controller():
             ax.set_ylabel('Probability')
 
             #format title of historgram
-            title_str = "{} agents - Protocol {} - Lying Transfer Prob. {}%".format(str(self.model.amount_agents), self.model.protocol.name, str(self.model.transfer_chance) )
+            title_str = "{} agents - Protocol {} - Truth Prob. {}%".format(str(self.model.amount_agents), self.model.protocol.name, str(self.model.transfer_chance) )
             plt.title(title_str)
 
             ax.legend(["Mean", "Fitted curve"])
