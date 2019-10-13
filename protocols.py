@@ -1,5 +1,6 @@
 from enum import Enum
 import random
+import numpy as np
 
 """
 Protocol types for caller / receiver selection.
@@ -44,7 +45,7 @@ def choose_callers(model):
     elif protocol == Protocols.CO:
         # Pick someone that still has someone in their phonebook that they have not called yet
         phonebook_calls = model.phonebook_calls
-        possible_callers =  [agent for agent in range (amount_agents) if list(phonebook_calls[agent]).count(0) > 0]
+        possible_callers =  [agent for agent in possible_callers if list(phonebook_calls[agent]).count(0) > 0]
         
     # Token: Each agent starts with a token, when you call someone you give your token away. Agents can only call if they have a token
     elif protocol == Protocols.TOK:
@@ -79,7 +80,10 @@ def choose_callers(model):
     caller = random.choice(possible_callers)
 
     # Determine who this agent can call
-    eligible_receivers = phonebook[caller]
+    if protocol == Protocols.CO:
+        eligible_receivers = np.where(phonebook_calls[caller, :] == 0.0)[0]
+    else:
+        eligible_receivers = phonebook[caller]
 
     if protocol == Protocols.LNS:
         eligible_receivers = eligible_receivers_lns[caller]

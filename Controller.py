@@ -319,42 +319,31 @@ class Controller():
         amount_experiments = int(self.amount_experiments.get())
         max_iters = int(self.max_amount_iters_experiments.get())
         
+        # Start the model, obtain the results
         results = self.model.do_experiment(amount_experiments, max_iters)
 
+        # Write progress to console NOTE: Maybe remove this later?
         for iteration, result in enumerate(results):
             print("Trial {}: {}".format(iteration, result))
 
-        # print (results)
-
+        # Create the graphs
         self.create_plots(results, experiment_folder)
 
-        plot_data = [numturns for (exit_status, numturns) in results if exit_status == 'DONE'] # only plot succesful runs
-
-        # print (plot_data)
-        plot_data_std  = np.std(plot_data) # std deviation
-
-        # plt.hist(plot_data, bins=25, edgecolor='k', alpha=0.65)
-        # plt.ylabel('Occurences')
-        # plt.show()
-
-
-        
-        
-
-        # fig, ax = plt.subplots()
-        # ax.boxplot(plot_data)
-        # plt.show()
-
-
+        # Write the results to CSV
         self.write_results_to_csv(results, experiment_folder, CSV_FN)
 
+
+    """
+    Creates and stores the all the figures that is created upon running an experiment.
+    """
     def create_plots(self, results, path):
         self.create_barplot(results, path, PLOT_FN + "_barplot" + IMAGE_TYPE)
         self.create_boxplot(results, path, PLOT_FN + "_boxplot" + IMAGE_TYPE)
         self.create_hist_plot(results, path, PLOT_FN + "_hist" + IMAGE_TYPE)
 
-
-
+    """
+    Creates the barplot figure that is created upon running an experiment.
+    """
     def create_barplot(self, results, path, filename):
         tot_path = os.path.join("data", path, filename)
 
@@ -374,8 +363,9 @@ class Controller():
 
         fig.savefig(tot_path)
 
-
-
+    """
+    Creates the boxplot figure that is created upon running an experiment.
+    """
     def create_boxplot(self, results, path, filename):
         tot_path = os.path.join("data", path, filename) 
 
@@ -389,7 +379,6 @@ class Controller():
         plt.title("Boxplot of calls made")
 
         fig.savefig(tot_path)
-
 
     def create_hist_plot(self, results, path, filename):
         tot_path = os.path.join("data", path, filename)
