@@ -315,7 +315,19 @@ class Controller():
     #performs the experiments
     def Btn_perform_experiments (self, event):
         experiment_folder = self.view.exppanel.data_folder_name_textarea.get(1.0, 'end-1c')
+
+        #create folder name based on params
+        pr = self.model.protocol.name
+        amt_agents = str(self.model.amount_agents)
+        amt_exp = str(int(self.amount_experiments.get()))
+        tr_ch = str(self.model.transfer_chance)
+        lie_fac = str(int(self.model.lie_factor*100))
+        param_string = "pr={}_a={}_amt_exp={}_lie_tr={}_lie_fac={}".format(pr, amt_agents, amt_exp, tr_ch, lie_fac )
+        
+        experiment_folder = experiment_folder + "_" + param_string
+
         self.create_experiment_folder(experiment_folder)
+
         amount_experiments = int(self.amount_experiments.get())
         max_iters = int(self.max_amount_iters_experiments.get())
         
@@ -336,7 +348,7 @@ class Controller():
     """
     Creates and stores the all the figures that is created upon running an experiment.
     """
-    def create_plots(self, results, path):
+    def create_plots(self, results, path):        
         self.create_barplot(results, path, PLOT_FN + "_barplot" + IMAGE_TYPE)
         self.create_boxplot(results, path, PLOT_FN + "_boxplot" + IMAGE_TYPE)
         self.create_hist_plot(results, path, PLOT_FN + "_hist" + IMAGE_TYPE)
@@ -396,7 +408,7 @@ class Controller():
         # the histogram of the data
         if len(plot_data) > 0:
             fig, ax = plt.subplots()
-            n, bins, patches = ax.hist(plot_data, 25, density=1, edgecolor='k', alpha=0.65)
+            n, bins, patches = ax.hist(plot_data, bins = 15, density=1, edgecolor='k', alpha=0.65)
             plot_data_mean = sum(plot_data) / float(len(plot_data))
 
             # add median line
@@ -407,9 +419,13 @@ class Controller():
                 np.exp(-0.5 * (1 / plot_data_std * (bins - plot_data_mean))**2))
             ax.plot(bins, y, '--r')
 
-            ax.set_xlabel('Calls made')
-            ax.set_ylabel('Frequency of occurence')
-            plt.title("Histogram of calls made")
+            ax.set_xlabel('# of calls')
+            ax.set_ylabel('Probability')
+
+            #format title of historgram
+            title_str = "{} agents - Protocol {} - Lying Chance {}%".format(str(self.model.amount_agents), self.model.protocol.name, str(self.model.transfer_chance) )
+            plt.title(title_str)
+
             ax.legend(["Mean", "Fitted curve"])
             # Tweak spacing to prevent clipping of ylabel
             fig.tight_layout()
@@ -422,6 +438,7 @@ class Controller():
     #creates a new experiment folder in the data directory
     def create_experiment_folder(self, path):
         tot_path = os.path.join("data", path) 
+        print(tot_path)
   
         if not os.path.exists(tot_path):
             os.makedirs(tot_path)
