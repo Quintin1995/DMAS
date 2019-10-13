@@ -370,7 +370,7 @@ class Controller():
             # Update progress
             if _ % iterations_per_percent == 0 and _!=0:# your code
                 elapsed_time = time.time() - start_time
-                progress_bar.config(text="Progress: {}%, {:0.2f}s / 1000 trials".format(_ // iterations_per_percent, elapsed_time * 100 / _ ))
+                progress_bar.config(text="Progress: {}%, {:0.2f}s / 1000 trials".format(_ // iterations_per_percent, elapsed_time * 1000 / _ ))
                 progress_bar.update()
             
             progress_bar.config(text="Finished.")

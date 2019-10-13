@@ -75,7 +75,7 @@ class Experiment_Panel(Tk.Frame):
         self.max_allowed_iters.pack(side="top", fill=Tk.BOTH)
 
         #The amount of experiments that will be performed
-        Tk.Label(self.exp_params_frame, text="Experiment Count").pack(side="top", fill=Tk.BOTH)
+        Tk.Label(self.exp_params_frame, text="Trial Count").pack(side="top", fill=Tk.BOTH)
         self.experi_count = Tk.Spinbox(self.exp_params_frame, from_=1, to=1000000)
         self.experi_count.delete(0,"end")
         self.experi_count.insert(0,"100")
