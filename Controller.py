@@ -320,7 +320,7 @@ class Controller():
         max_iters = int(self.max_amount_iters_experiments.get())
         
         # Start the model, obtain the results
-        results = self.model.do_experiment(amount_experiments, max_iters)
+        results = self.do_experiment(amount_experiments, max_iters)
 
         # Write progress to console NOTE: Maybe remove this later?
         for iteration, result in enumerate(results):
@@ -332,6 +332,34 @@ class Controller():
         # Write the results to CSV
         self.write_results_to_csv(results, experiment_folder, CSV_FN)
 
+    def do_experiment (self, amount, max_iterations):
+        progress_bar = self.view.exppanel.progress_bar
+        iterations_per_percent = amount // 100
+
+        results = list()
+        for _ in range (amount):
+            # Reset the model
+            self.model.reset_model()
+
+            # Do iterations until the max amount
+            self.model.do_iterations(max_iterations)
+            
+            # Obtain the state of the model after the iterations are done
+            outcome = self.model.state
+            amt_iterations = self.model.calls_made
+
+            # Store the final state, and the amount of iterations it took to reach that state in a tuple
+            observation = tuple ((outcome.name, amt_iterations))
+            results.append(observation)
+
+            # Update progress
+            if _ % iterations_per_percent == 0:
+                progress_bar
+                progress_bar.config(text="Experiment in progress: {}%".format(_ // iterations_per_percent))
+                progress_bar.update()
+            
+            progress_bar.config(text="Finished.")
+        return results
 
     """
     Creates and stores the all the figures that is created upon running an experiment.
