@@ -345,9 +345,11 @@ class Controller():
         self.write_results_to_csv(results, experiment_folder, CSV_FN)
 
     def do_experiment (self, amount, max_iterations):
-        progress_bar = self.view.exppanel.progress_bar
-        iterations_per_percent = amount // 100
+        start_time = time.time()
 
+        progress_bar = self.view.exppanel.progress_bar
+        iterations_per_percent = amount / 100.0
+        
         results = list()
         for _ in range (amount):
             # Reset the model
@@ -365,9 +367,9 @@ class Controller():
             results.append(observation)
 
             # Update progress
-            if _ % iterations_per_percent == 0:
-                progress_bar
-                progress_bar.config(text="Experiment in progress: {}%".format(_ // iterations_per_percent))
+            if _ % iterations_per_percent == 0 and _!=0:# your code
+                elapsed_time = time.time() - start_time
+                progress_bar.config(text="Progress: {}%, {:0.2f}s / 1000 trials".format(_ // iterations_per_percent, elapsed_time * 100 / _ ))
                 progress_bar.update()
             
             progress_bar.config(text="Finished.")
