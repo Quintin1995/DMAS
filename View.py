@@ -95,8 +95,9 @@ class Experiment_Panel(Tk.Frame):
         self.run_experi_butn = Tk.Button(self.exp_params_frame, text="Run Experiments")
         self.run_experi_butn.pack(side="top",fill=Tk.BOTH)
 
- 
-
+        # Progress bar 
+        self.progress_bar = Tk.Label(self.exp_params_frame, text="No experiment running")
+        self.progress_bar.pack(side="top", fill=Tk.BOTH)
 
 class SidePanel(Tk.Frame):
     def __init__(self, master):
