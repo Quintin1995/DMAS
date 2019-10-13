@@ -42,6 +42,17 @@ The protocols implemented in the simulation are:
 
 To update the model with a new protocol setting, or to reset the current model, click the "Set model" button.
 
+# Transferring knowledge
+When two agents call each other, they will transfer their secrets.
+When no lying is used, the sender will tell the receiver for each agent which secret the sender believes they have.
+To balance the weight of lies and truth in the system, each agent transfers a value based on how sure they are the other agent has that secret.
+If an agent has heard that agent A has secret 1 twice and secret 2 three times, it will transfer secret 2 for agent A with strength 0.6.
+A truth percentage can be set, which is universal for all agents, which determines the chance an agent tells the truth.
+If an agent is not telling the truth about an agent, a secret is chosen at random to be transferred, according to two different implementations: LIE and MISTAKE.
+- LIE: The secret randomly chosen to be transfered is send to the receiver with a fixed strenght caled lie_factor.
+- MISTAKE: The secret randomly chosen to be transfere is send to the receiver with a fixed strenght called lie_factor if the sender has never heard the secret (count is 0). If the sender has heard the secret, the strenght is calculated as with a truthful transfer.
+This means that with the LIE implementation, an agent always tells the lie, whereas with the MISTAKE implementation, the agent shares the value of how much it is convinced that this wrong secret might be the truth.
+
 # Phonebook
 The phonebook determines the edges of the network.
 Agents that do not have each other's 'phone numbers' cannot call each other.
