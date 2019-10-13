@@ -410,7 +410,7 @@ class Controller():
             ax.set_xlabel('Calls made')
             ax.set_ylabel('Frequency of occurence')
             plt.title("Histogram of calls made")
-            ax.legend(["median", "best fit"])
+            ax.legend(["Mean", "Fitted curve"])
             # Tweak spacing to prevent clipping of ylabel
             fig.tight_layout()
             # plt.show()
