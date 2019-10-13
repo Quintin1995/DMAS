@@ -8,10 +8,14 @@ import matplotlib.pyplot as plt
 import matplotlib.style as style
 import networkx as nx
 import numpy as np
+import os
+from os.path import join
 import re
 import sys
+import time
 import tkinter as Tk
 from tkinter import messagebox
+
 
 #our libraries
 from Model import *
@@ -38,6 +42,16 @@ LINE_PLOT_TITLE = "Sum of agent knowledge progression"
 LINE_PLOT_YLAB  = "Sum of known agent secrets"
 LINE_PLOT_XLAB  = "Amount of calls made"
 
+# plot generation
+PLOT_FN = "test" # start of the plot filename, will be extended with plot types and image type
+IMAGE_TYPE = ".png"
+
+# csv file generation
+CSV_FN = "test_output.csv" # file name, will be stored in experiment folder
+
+
+
+
 class Controller():
     def __init__(self):
         self.root = Tk.Tk()
@@ -57,18 +71,29 @@ class Controller():
         self.draw_graph(0)
         self.draw_line(0)
 
+        #set button functions
+        self.view.exppanel.run_experi_butn.bind("<Button>", self.Btn_perform_experiments)
         self.view.sidepanel.iterBut.bind("<Button>", self.Btn_Do_iterations)
         self.view.sidepanel.iterXBut.bind("<Button>", self.Btn_DoN_iterations)
         self.view.parampanel.resetButton.bind("<Button>", self.reset_model)
+
+        #get values from parampanel
         self.selected_model = self.view.parampanel.selected_model
         self.selected_phonebook = self.view.parampanel.selected_phonebook
         self.selected_behavior = self.view.parampanel.selected_behavior
         self.selected_amount_agents = self.view.parampanel.amount_agents
         self.selected_transfer_chance = self.view.parampanel.transfer_chance
         self.selected_lie_factor = self.view.parampanel.lie_factor
-        self.selected_amount_iterations = self.view.sidepanel.amount_iterations
         self.selected_amount_connectivity = self.view.parampanel.amount_connectivity
-        self.transfer_pb = self.view.parampanel.pb_mode_var
+        self.transfer_pb = self.view.parampanel.pb_mode_var     #pb = probability
+
+        #get values from sidepanel
+        self.selected_amount_iterations = self.view.sidepanel.amount_iterations
+
+        #get values from experiment panel
+        self.amount_experiments = self.view.exppanel.experi_count
+        self.max_amount_iters_experiments = self.view.exppanel.max_allowed_iters
+
 
     def run(self):
         self.root.title("DMAS - GOSSIP PROTOCOLS")
@@ -285,3 +310,158 @@ class Controller():
         
     def get_agent_colors (self):
         return [self.get_agent_color(agent_idx) for agent_idx in range(self.model.amount_agents)]
+
+
+    #performs the experiments
+    def Btn_perform_experiments (self, event):
+        experiment_folder = self.view.exppanel.data_folder_name_textarea.get(1.0, 'end-1c')
+        self.create_experiment_folder(experiment_folder)
+        amount_experiments = int(self.amount_experiments.get())
+        max_iters = int(self.max_amount_iters_experiments.get())
+        
+        results = self.model.do_experiment(amount_experiments, max_iters)
+
+        for iteration, result in enumerate(results):
+            print("Trial {}: {}".format(iteration, result))
+
+        # print (results)
+
+        self.create_plots(results, experiment_folder)
+
+        plot_data = [numturns for (exit_status, numturns) in results if exit_status == 'DONE'] # only plot succesful runs
+
+        # print (plot_data)
+        plot_data_std  = np.std(plot_data) # std deviation
+
+        # plt.hist(plot_data, bins=25, edgecolor='k', alpha=0.65)
+        # plt.ylabel('Occurences')
+        # plt.show()
+
+
+        
+        
+
+        # fig, ax = plt.subplots()
+        # ax.boxplot(plot_data)
+        # plt.show()
+
+
+        self.write_results_to_csv(results, experiment_folder, CSV_FN)
+
+    def create_plots(self, results, path):
+        self.create_barplot(results, path, PLOT_FN + "_barplot" + IMAGE_TYPE)
+        self.create_boxplot(results, path, PLOT_FN + "_boxplot" + IMAGE_TYPE)
+        self.create_hist_plot(results, path, PLOT_FN + "_hist" + IMAGE_TYPE)
+
+
+
+    def create_barplot(self, results, path, filename):
+        tot_path = os.path.join("data", path, filename)
+
+        categories = ['Success', 'Failed', 'Did not finish']
+        values = list()
+        values.append(len(list([v for s, v in results if s == 'DONE'])))
+        values.append(len(list([v for s, v in results if s == 'NO_CALLS'])))
+        values.append(len(list([v for s, v in results if s == 'RUN'])))
+        fig, ax = plt.subplots()
+        bar = ax.bar(categories, values, alpha=0.4)
+        for rect in bar:
+            height = rect.get_height()
+            plt.text(rect.get_x() + rect.get_width()/2.0, height, '%10.2f%%' % ((int(height)/float(len(results))) * 100.0), ha='center', va='bottom')
+        # plt.show()
+
+        plt.title("Experiment results")
+
+        fig.savefig(tot_path)
+
+
+
+    def create_boxplot(self, results, path, filename):
+        tot_path = os.path.join("data", path, filename) 
+
+        plot_data = [numturns for (exit_status, numturns) in results if exit_status == 'DONE'] # only plot succesful runs
+        fig, ax = plt.subplots()
+        ax.boxplot(plot_data)
+
+        ax.axes.get_xaxis().set_visible(False) # disable x-axis (it would only show a 1)
+
+        ax.set_ylabel("Calls made")
+        plt.title("Boxplot of calls made")
+
+        fig.savefig(tot_path)
+
+
+    def create_hist_plot(self, results, path, filename):
+        tot_path = os.path.join("data", path, filename)
+        
+        plt.figure() # init new figure
+        plot_data = [numturns for (exit_status, numturns) in results if exit_status == 'DONE'] # only plot succesful runs
+
+        print (plot_data)
+        plot_data_std  = np.std(plot_data)
+        # plt.hist(plot_data, bins=25, edgecolor='k', alpha=0.65)
+        # plt.ylabel('Occurences')
+        # plt.show()
+
+        
+        # the histogram of the data
+        if len(plot_data) > 0:
+            fig, ax = plt.subplots()
+            n, bins, patches = ax.hist(plot_data, 25, density=1, edgecolor='k', alpha=0.65)
+            plot_data_mean = sum(plot_data) / float(len(plot_data))
+
+            # add median line
+            plt.axvline(sum(plot_data)/float(len(plot_data)), color='k', linestyle='dashed', linewidth=1)
+
+            # add a 'best fit' line
+            y = ((1 / (np.sqrt(2 * np.pi) * plot_data_std)) *
+                np.exp(-0.5 * (1 / plot_data_std * (bins - plot_data_mean))**2))
+            ax.plot(bins, y, '--r')
+
+            ax.set_xlabel('Calls made')
+            ax.set_ylabel('Frequency of occurence')
+            plt.title("Histogram of calls made")
+            ax.legend(["median", "best fit"])
+            # Tweak spacing to prevent clipping of ylabel
+            fig.tight_layout()
+            # plt.show()
+
+            fig.savefig(tot_path) # save plot
+
+        
+
+    #creates a new experiment folder in the data directory
+    def create_experiment_folder(self, path):
+        tot_path = os.path.join("data", path) 
+  
+        if not os.path.exists(tot_path):
+            os.makedirs(tot_path)
+
+
+    def write_results_to_csv (self, results, csv_path, filename):
+        tot_path = os.path.join("data", csv_path, filename)
+
+        # Collect information
+        amount_agents = self.model.amount_agents
+        model_type    = self.model.protocol.name
+        phonebook     = PhonebookType(self.model.phonebook_type).name
+        current_time  = time.strftime("%X_%x")
+        # Open the file for writing
+        file = open(tot_path, 'w+')
+
+        # Write file header
+        file.write("trial;model_type;phonebook;amount_agents;iterations;state;time\n")
+
+        # Process the results
+        for iteration, result in enumerate(results):
+            state, calls_made = result
+            file.write("{};".format(iteration))
+            file.write("{};".format(model_type))
+            file.write("{};".format(phonebook))
+            file.write("{};".format(amount_agents))
+            file.write("{};".format(calls_made))
+            file.write("{};".format(state))
+            file.write("{}\n".format(current_time))
+        
+        # Close file
+        file.close()

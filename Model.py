@@ -271,7 +271,7 @@ class Model:
         for iteration in range (iterations):
             if len(self.get_experts()) == self.amount_agents:
                 self.state = State.DONE
-                print(self.state)
+                # print(self.state)
                 break
             try: 
                 self.next_call()
@@ -279,7 +279,25 @@ class Model:
                 # print ("Ended execution after {} iterations, no more calls possible.".format(iteration))
                 self.state = State.NO_CALLS
                 break
-    
+
+    def do_experiment (self, amount, max_iterations):
+        results = list()
+        for _ in range (amount):
+            # Reset the model
+            self.reset_model()
+
+            # Do iterations until the max amount
+            self.do_iterations(max_iterations)
+
+            # Obtain the state of the model after the iterations are done
+            outcome = self.state
+            amt_iterations = self.calls_made
+
+            # Store the final state, and the amount of iterations it took to reach that state in a tuple
+            observation = tuple ((outcome.name, amt_iterations))
+            results.append(observation)
+        return results
+
     def reset_model (self):
         self.call_log   = list()
         self.calls_made = 0

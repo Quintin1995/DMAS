@@ -8,7 +8,7 @@ Phonebook initialization type, determines who can call who.
 TYPES:
 - ALL (Everyone is accessible to everyone initially.)
 """
-class PhonebookType:
+class PhonebookType(Enum):
     ALL         = 1     # Everyone is in the phonebook
     TWO_WORLDS  = 2 
     RAND_GRAPH  = 3
