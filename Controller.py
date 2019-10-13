@@ -49,7 +49,7 @@ IMAGE_TYPE = ".png"
 # csv file generation
 CSV_FN = "test_output.csv" # file name, will be stored in experiment folder
 
-
+DEBUG = False
 
 
 class Controller():
@@ -336,7 +336,8 @@ class Controller():
 
         # Write progress to console NOTE: Maybe remove this later?
         for iteration, result in enumerate(results):
-            print("Trial {}: {}".format(iteration, result))
+            if DEBUG:
+                print("Trial {}: {}".format(iteration, result))
 
         # Create the graphs
         self.create_plots(results, experiment_folder)
@@ -428,7 +429,8 @@ class Controller():
         plt.figure() # init new figure
         plot_data = [numturns for (exit_status, numturns) in results if exit_status == 'DONE'] # only plot succesful runs
 
-        print (plot_data)
+        if DEBUG:
+            print (plot_data)
         plot_data_std  = np.std(plot_data)
         # plt.hist(plot_data, bins=25, edgecolor='k', alpha=0.65)
         # plt.ylabel('Occurences')
@@ -453,7 +455,7 @@ class Controller():
             ax.set_ylabel('Probability')
 
             #format title of historgram
-            title_str = "{} agents - Protocol {} - Lying Chance {}%".format(str(self.model.amount_agents), self.model.protocol.name, str(self.model.transfer_chance) )
+            title_str = "{} agents - Protocol {} - Truth Prob. {}%".format(str(self.model.amount_agents), self.model.protocol.name, str(self.model.transfer_chance) )
             plt.title(title_str)
 
             ax.legend(["Mean", "Fitted curve"])
@@ -468,8 +470,7 @@ class Controller():
     #creates a new experiment folder in the data directory
     def create_experiment_folder(self, path):
         tot_path = os.path.join("data", path) 
-        print(tot_path)
-  
+
         if not os.path.exists(tot_path):
             os.makedirs(tot_path)
 
