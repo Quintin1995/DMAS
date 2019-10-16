@@ -9,6 +9,9 @@ Date: Friday 06-09-2019
 - matplotlib (3.1.1)
 - networkx (2.3)
 
+These can be installed using the command
+$ pip3 install -r REQUIREMENTS.txt
+
 
 # How to run (23 Sep 2019)
 - Most up to date Branch --> master

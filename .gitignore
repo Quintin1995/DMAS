@@ -103,4 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# current project settings
 data/
+.vscode/
