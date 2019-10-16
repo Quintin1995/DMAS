@@ -27,7 +27,7 @@ style.use('seaborn-bright')
 
 ## temp experiment parameters
 AMOUNT_AGENTS   = 10
-MAX_SECRET      = 3
+MAX_SECRET      = 2
 TRANSFER_CHANCE = 100
 LIE_FACTOR      = 25
 BEHAVIOR        = Behavior.LIE
