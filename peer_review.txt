@@ -1,0 +1,10 @@
+Peer Review:
+
+General:
+- Many small grammatical mistakes, such as a missing "s" for plural, etc.
+
+Introduction:
+- There is no description of what constitutes "civil violence", only mentioning it is a problem, who benefits from learning from it and how simulations help. Give a description first.
+- No citations for any of the claims in 1.1 Problem
+- The state of the art section is more to describe the performance or conclusions from previous work rather than to describe their modelling techniques, this can be reserved for the methods section. Try to answer: What currently performing best on this topic and why do we want to improve on this?
+- In the New Idea subsection, ellaborate on why this is a necesary topic of research.
