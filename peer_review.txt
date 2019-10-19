@@ -2,9 +2,24 @@ Peer Review:
 
 General:
 - Many small grammatical mistakes, such as a missing "s" for plural, etc.
+- The paper is already quite long, even though sections still need to be added. Maybe try to be more concise.
+
 
 Introduction:
 - There is no description of what constitutes "civil violence", only mentioning it is a problem, who benefits from learning from it and how simulations help. Give a description first.
 - No citations for any of the claims in 1.1 Problem
 - The state of the art section is more to describe the performance or conclusions from previous work rather than to describe their modelling techniques, this can be reserved for the methods section. Try to answer: What currently performing best on this topic and why do we want to improve on this?
 - In the New Idea subsection, ellaborate on why this is a necesary topic of research.
+
+
+
+
+
+
+Results:
+- The graphs are really nice and complement your descriptions. Adding axis names would make the graphs a lot more clear.
+- Maybe explain what a grievance map is and why it is relevant in this section. Include the new map instead of describing it.
+- Explain what your simulation findings mean w.r.t. your research question. Obervations on "The slope of the red curve" don't explain a lot without knowing what the relevance/meaning of the red curve is.
+- Explain what you mean by the subsection titles baseline and propaganda effect. It is not immeadiately clear what is meant.
+- The barplot that is referred to is a pie chart.
+- The final section describes how changing a parameter will influence the results. This should be moved to the discussion.
