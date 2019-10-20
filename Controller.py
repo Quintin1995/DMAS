@@ -198,23 +198,6 @@ class Controller():
 
         #draw the graph itself
         pos_current = nx.circular_layout(self.model.graph)
-
-        
-        #draw the labels of the graph
-        labels = self.get_graph_labels()
-        labels={}
-        labels[0]=r'$a$'
-        labels[1]=r'$b$'
-        labels[2]=r'$c$'
-        labels[3]=r'$d$'
-        labels[4]=r'$\alpha$'
-        labels[5]=r'$\beta$'
-        labels[6]=r'$\gamma$'
-        labels[7]=r'$\delta$'
-        labels[8]=r'$e$'
-        labels[9]=r'$f$'
-        
-        iets_smt = nx.draw_networkx_labels(self.model.graph, pos_current, labels, font_size=5)
         
         #we do not need axis for this matplotlib plot, because it is a graph
         self.axis.axis('off')
@@ -327,21 +310,6 @@ class Controller():
         
         #set Call color, the edge between callers
         nx.draw_networkx_edges(self.model.graph, edgelist=last_call, edge_color=EDGE_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
-
-        # draw the graph labels, of each agent.
-        labels = self.get_graph_labels()
-        labels={}
-        labels[0]=r'$a$'
-        labels[1]=r'$b$'
-        labels[2]=r'$c$'
-        labels[3]=r'$d$'
-        labels[4]=r'$\alpha$'
-        labels[5]=r'$\beta$'
-        labels[6]=r'$\gamma$'
-        labels[7]=r'$\delta$'
-        labels[8]=r'$e$'
-        labels[9]=r'$f$'
-        smt = nx.draw_networkx_labels(self.model.graph, nx.circular_layout(self.model.graph), labels, font_size=5)
 
         self.view.canvas.draw()
         
