@@ -279,9 +279,12 @@ class Controller():
         amount = int(self.selected_amount_iterations.get())
         self.do_iterations(amount)
 
+    #caluclate the size of a node based on the amount of secrets it knows
     def get_node_size(self, agent_idx):
         return (175 * self.model.get_amount_known_secrets(agent_idx)) + 100
 
+
+    #format a call from the model into a string representable in the UI.
     def get_formated_call(self, amount):
         self.view.leftpanel.model_call_log_textarea.delete('1.0', Tk.END)
         formated_call = ""
@@ -293,12 +296,15 @@ class Controller():
         return formated_call            
 
 
+    #calculates a color between green and red, based on the amount of knowledge it has.
     def get_agent_color (self, agent_idx):
         known_secrets  = self.model.get_amount_known_secrets(agent_idx)
         fraction_known = known_secrets / float(self.model.amount_agents)
 
         return [1.0 - fraction_known, fraction_known, 0.0]
         
+
+    #returns all colors of the agents, based on their amount of knowledge.
     def get_agent_colors (self):
         return [self.get_agent_color(agent_idx) for agent_idx in range(self.model.amount_agents)]
 
@@ -336,6 +342,8 @@ class Controller():
         # Write the results to CSV
         self.write_results_to_csv(results, experiment_folder, CSV_FN)
 
+
+    #performs an experiment, with paramters set by the UI 'amount' times. 
     def do_experiment (self, amount, max_iterations):
         start_time = time.time()
 
@@ -414,6 +422,8 @@ class Controller():
 
         fig.savefig(tot_path)
 
+
+    #create a historgram of the experiment data and save it to a file as image.
     def create_hist_plot(self, results, path, filename):
         tot_path = os.path.join("data", path, filename)
         
@@ -423,10 +433,6 @@ class Controller():
         if DEBUG:
             print (plot_data)
         plot_data_std  = np.std(plot_data)
-        # plt.hist(plot_data, bins=25, edgecolor='k', alpha=0.65)
-        # plt.ylabel('Occurences')
-        # plt.show()
-
         
         # the histogram of the data
         if len(plot_data) > 0:
@@ -466,6 +472,7 @@ class Controller():
             os.makedirs(tot_path)
 
 
+    #writes data to a csv, so that it can be used for furter statistical processing.
     def write_results_to_csv (self, results, csv_path, filename):
         tot_path = os.path.join("data", csv_path, filename)
 
@@ -548,6 +555,7 @@ class Controller():
         #set Call color, the edge between callers
         nx.draw_networkx_edges(self.model.graph, edgelist=last_call, edge_color=EDGE_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
 
+        #update whole canvas
         self.view.canvas.draw()
         
         self.line_axis.clear()
