@@ -278,50 +278,9 @@ class Controller():
     def Btn_DoN_iterations(self, event):
         amount = int(self.selected_amount_iterations.get())
         self.do_iterations(amount)
-        
-    def do_iterations (self, amount):
-        #clear the axes, turn them of and add a legend
-        self.axis.clear()
-        self.axis.axis('off')
-        self.axis.legend(self.legend_styling, ['Little knowledge', 'More knowledge', 'Expert'], loc='upper left', framealpha=0.33)
 
-        #perform main loop
-        self.model.do_iterations(amount)
-
-        #update textare of left panel with last element of call log
-        self.view.leftpanel.model_call_log_textarea.insert(Tk.END, self.get_formated_call(amount) )
-
-        #update the visualization of the graph with calls
-        self.model.graph.add_edges_from(self.model.call_log)
-        
-        #set colors of the agents according to their fraction of total possible knowlegde/secrets
-        agent_colors = self.get_agent_colors()
-        nx.draw_networkx(self.model.graph, pos=nx.circular_layout(self.model.graph), edge_color='#000000', node_color=agent_colors, arrows=True, ax=self.axis)
-
-        # Redraw selected nodes
-        last_call = list()
-        last_call.append(self.model.get_last_call())
-        
-        #set expert color
-        nx.draw_networkx_nodes(self.model.graph, nodelist=self.model.get_experts(), node_color=EXPERT_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
-        
-        #set caller colors
-        nx.draw_networkx_nodes(self.model.graph, nodelist=list(self.model.get_last_call()), node_color=CALLER_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
-        
-        #set Call color, the edge between callers
-        nx.draw_networkx_edges(self.model.graph, edgelist=last_call, edge_color=EDGE_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
-
-        self.view.canvas.draw()
-        
-        self.line_axis.clear()
-        self.set_line_style ()
-
-        #update the axis of the lower plot
-        self.line_axis.set_ylim([0, (self.model.amount_agents * self.model.amount_agents)])
-        self.line_axis.plot(list(range(self.model.calls_made)),self.model.summed_knowledge)
-        self.view.line_canvas.draw()
-        self.update_info()
-
+    def get_node_size(self, agent_idx):
+        return (175 * self.model.get_amount_known_secrets(agent_idx)) + 100
 
     def get_formated_call(self, amount):
         self.view.leftpanel.model_call_log_textarea.delete('1.0', Tk.END)
@@ -534,3 +493,68 @@ class Controller():
         
         # Close file
         file.close()
+
+
+
+    def do_iterations (self, amount):
+        #clear the axes, turn them of and add a legend
+        self.axis.clear()
+        self.axis.axis('off')
+        self.axis.legend(self.legend_styling, ['Little knowledge', 'More knowledge', 'Expert'], loc='upper left', framealpha=0.33)
+
+        #perform main loop
+        self.model.do_iterations(amount)
+
+        #update textare of left panel with last element of call log
+        self.view.leftpanel.model_call_log_textarea.insert(Tk.END, self.get_formated_call(amount) )
+
+        #update the visualization of the graph with calls
+        self.model.graph.add_edges_from(self.model.call_log)
+        
+        #set colors of the agents according to their fraction of total possible knowlegde/secrets
+        agent_colors = self.get_agent_colors()
+        nx.draw_networkx(self.model.graph, pos=nx.circular_layout(self.model.graph), edge_color='#000000', node_color=agent_colors, arrows=True, ax=self.axis)
+
+        # Redraw caller and callee nodes
+        last_call = list()
+        last_call.append(self.model.get_last_call())
+        
+        #set expert color
+        experts = list(self.model.get_experts())
+
+        #set caller colors
+        callers = list(self.model.get_last_call())
+
+        #determine which nodes need resizing and need to be redrawed
+        to_update_nodes = []
+        for agent in range(self.model.amount_agents):
+            if agent not in callers:
+                to_update_nodes.append(agent)
+            if agent not in experts:
+                to_update_nodes.append(agent)
+
+        #draw all other nodes first
+        for agent in to_update_nodes:
+            nx.draw_networkx_nodes(self.model.graph, nodelist=[agent], node_color=self.get_agent_color(agent), pos=nx.circular_layout(self.model.graph), ax=self.axis, node_size=self.get_node_size(agent))
+        
+        #draw all expert nodes
+        for agent in experts:
+            nx.draw_networkx_nodes(self.model.graph, nodelist=[agent], node_color=EXPERT_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis, node_size=self.get_node_size(agent))
+        
+        #draw caller and callee nodes.
+        for agent in callers:
+            nx.draw_networkx_nodes(self.model.graph, nodelist=[agent], node_color=CALLER_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis, node_size=self.get_node_size(agent))
+        
+        #set Call color, the edge between callers
+        nx.draw_networkx_edges(self.model.graph, edgelist=last_call, edge_color=EDGE_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
+
+        self.view.canvas.draw()
+        
+        self.line_axis.clear()
+        self.set_line_style ()
+
+        #update the axis of the lower plot
+        self.line_axis.set_ylim([0, (self.model.amount_agents * self.model.amount_agents)])
+        self.line_axis.plot(list(range(self.model.calls_made)),self.model.summed_knowledge)
+        self.view.line_canvas.draw()
+        self.update_info()

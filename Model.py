@@ -239,6 +239,19 @@ class Model:
                 return False
         return True
 
+
+    """
+    Returns the amount of secrets known to the agent.
+    """ 
+    def get_secret_count(self, agent_idx):
+        secret_count = 0
+        for secret_idx in range (self.amount_agents):
+            if self.get_agent_secret(secret_idx) != self.get_secret_value(agent_idx, secret_idx):
+                return secret_count
+            secret_count += 1
+        return secret_count
+
+
     """
     Returns the amount of secrets that an agent correctly knows
     """
