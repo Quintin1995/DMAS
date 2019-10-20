@@ -195,12 +195,58 @@ class Controller():
         #axis is the first plot with the graph in it.
         self.view.fig.clear()
         self.axis = self.view.fig.add_subplot(111)
-        nx.draw_networkx(self.model.graph, node_color=self.get_agent_colors(), pos=nx.circular_layout(self.model.graph), ax=self.axis)
+
+        #draw the graph itself
+        pos_current = nx.circular_layout(self.model.graph)
+
+        
+        #draw the labels of the graph
+        labels = self.get_graph_labels()
+        labels={}
+        labels[0]=r'$a$'
+        labels[1]=r'$b$'
+        labels[2]=r'$c$'
+        labels[3]=r'$d$'
+        labels[4]=r'$\alpha$'
+        labels[5]=r'$\beta$'
+        labels[6]=r'$\gamma$'
+        labels[7]=r'$\delta$'
+        labels[8]=r'$e$'
+        labels[9]=r'$f$'
+        
+        iets_smt = nx.draw_networkx_labels(self.model.graph, pos_current, labels, font_size=5)
+        
+        #we do not need axis for this matplotlib plot, because it is a graph
         self.axis.axis('off')
+
+        #add algend
         self.axis.legend(self.legend_styling, ['Little knowledge', 'More knowledge', 'Expert'], loc='upper left', framealpha=0.33)
 
+        #draw the graph
+        nx.draw_networkx(self.model.graph, node_color=self.get_agent_colors(), pos=pos_current, ax=self.axis)
+
+        #redraw
         self.view.fig.canvas.draw()
         self.draw_line(event)
+
+
+    #create a list of agent names to be shown in the graph
+    def get_graph_labels(self):
+        alphabet = "abcdefghijklmnopqrstuvwxyz"
+        agent_dict = {}
+        modules_op = 0
+        addition = ""
+
+        for i in range(self.model.amount_agents):
+            if i % 26 == 0 and i != 0:
+                addition = alphabet[modules_op]
+                modules_op += 1
+            letter = alphabet[i%26]
+            agent_dict[i] = str(addition + letter)
+        for elem in agent_dict:
+            print(elem)
+        return agent_dict
+
 
     def draw_line(self,event):
         self.view.line_fig.clear()
@@ -211,13 +257,16 @@ class Controller():
         
         self.view.line_fig.canvas.draw()
 
+
     def set_line_style(self):
         self.line_axis.set_title(LINE_PLOT_TITLE)
         self.line_axis.set_ylabel(LINE_PLOT_YLAB)
         self.line_axis.set_xlabel(LINE_PLOT_XLAB)
 
+
     def Btn_Do_iterations(self, event):
         self.do_iterations(1)
+
 
     def update_model_state (self):
         lbl = self.view.leftpanel.model_state_lbl
@@ -279,12 +328,27 @@ class Controller():
         #set Call color, the edge between callers
         nx.draw_networkx_edges(self.model.graph, edgelist=last_call, edge_color=EDGE_COLOR, pos=nx.circular_layout(self.model.graph), ax=self.axis)
 
+        # draw the graph labels, of each agent.
+        labels = self.get_graph_labels()
+        labels={}
+        labels[0]=r'$a$'
+        labels[1]=r'$b$'
+        labels[2]=r'$c$'
+        labels[3]=r'$d$'
+        labels[4]=r'$\alpha$'
+        labels[5]=r'$\beta$'
+        labels[6]=r'$\gamma$'
+        labels[7]=r'$\delta$'
+        labels[8]=r'$e$'
+        labels[9]=r'$f$'
+        smt = nx.draw_networkx_labels(self.model.graph, nx.circular_layout(self.model.graph), labels, font_size=5)
+
         self.view.canvas.draw()
         
         self.line_axis.clear()
         self.set_line_style ()
 
-        #update the axis
+        #update the axis of the lower plot
         self.line_axis.set_ylim([0, (self.model.amount_agents * self.model.amount_agents)])
         self.line_axis.plot(list(range(self.model.calls_made)),self.model.summed_knowledge)
         self.view.line_canvas.draw()
