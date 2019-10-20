@@ -16,6 +16,7 @@ $ pip3 install -r REQUIREMENTS.txt
 # How to run (23 Sep 2019)
 - Most up to date Branch --> master
 - Run command: python3 main.py
+- or try: python main.py
 
 # Gaining knowledge
 The amount of knowledge that agents have is depicted in the top graph, which shows the network.
