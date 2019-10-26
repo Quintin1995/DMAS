@@ -82,21 +82,60 @@ def generate_phonebook (phonebook_type, amount_agents, connectivity):
 Returns a Graph object based on the amount of agents(nodes) and connectivity fraction in percents.
 """
 def generate_random_graph(amount_agents=10, connectivity=1.0):
+    #calculate theoretical connectivity, when fully connected.
+    theory_connections = amount_agents * (amount_agents - 1) / 2
+    #how many connections still need to be added to reach the desired connectivity.
+    connections2do = theory_connections * connectivity
+    connections_made = 0
+    
+    #create the graph and add the first node.
     G = nx.Graph()
     first_node = int(0)
     G.add_node(first_node)
 
+    #create minimal spanning tree, to ensure that each node is connected to the rest of the graph.
     for i in range(1,amount_agents):
         node = random.choice(list(G.nodes))
         G.add_edge(i, node)
         G.add_node(int(i))
-   
-    for i in range(amount_agents):
-        picks = random.sample(list(range(amount_agents)), int(amount_agents*connectivity))
-        for sample in picks:
-            G.add_edge(i, sample)
+        connections_made += 1
 
+    #calc amount of available connections
+    available_connections = get_available_connections(G, amount_agents)
+
+    #add edges, until desired amount of connectivity is reached.
+    if len (available_connections) > 0 and int(connections2do - connections_made) > 0:
+        picks = random.sample(available_connections, int(connections2do - connections_made))
+        for agent1, agent2 in picks:
+            G.add_edge(agent1, agent2)
+
+    print ("Created random graph that is {} connected".format(get_connectivity(amount_agents, G)))
     return G
+
+
+"""
+Returns list of edges that are not present in the graph yet. These edges can still be added.
+"""
+def get_available_connections(G, amount_agents):
+    from itertools import combinations
+    all_connections = list(combinations(range(amount_agents), 2))
+    available_connections = list()
+    for connection in all_connections:
+        if connection not in G.edges:
+            available_connections.append(connection)
+    return available_connections
+
+
+"""
+Returns emperical connectivity of the graph.
+"""
+def get_connectivity(amount_agents, graph):
+    theory_connec = amount_agents * (amount_agents - 1) / 2
+    real_connec = len(graph.edges)
+
+    emperical_connec = real_connec / float(theory_connec)
+    return emperical_connec
+
 
 
 def convert_phonebook_to_tuples(phonebook):
