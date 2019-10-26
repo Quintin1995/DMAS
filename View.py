@@ -173,7 +173,7 @@ class ParamPanel(Tk.Frame):
         self.lie_factor.insert(0,"25")
         self.lie_factor.pack(side="top", fill=Tk.BOTH)
 
-        AVAILABLE_PHONEBOOKS = ["ALL", "TWO WORLDS", "RANDOM GRAPH", "CUSTOM GRAPH"]
+        AVAILABLE_PHONEBOOKS = ["ALL", "TWO WORLDS", "PARTIAL GRAPH", "CUSTOM GRAPH"]
         self.selected_phonebook = Tk.StringVar(self)
         self.selected_phonebook.set("ALL") # default value
 
@@ -181,7 +181,7 @@ class ParamPanel(Tk.Frame):
         self.phonebook_selector = Tk.OptionMenu(self.group_model, self.selected_phonebook, *AVAILABLE_PHONEBOOKS)
         self.phonebook_selector.pack(side="top", fill=Tk.BOTH)
 
-        Tk.Label(self.group_model, text="Connectivity of the Random Graph in percentage").pack(side="top", fill=Tk.BOTH)
+        Tk.Label(self.group_model, text="Connectivity of the Partial Graph in percentage").pack(side="top", fill=Tk.BOTH)
         self.amount_connectivity = Tk.Spinbox(self.group_model, from_=1, to=100)
         self.amount_connectivity.delete(0,"end")
         self.amount_connectivity.insert(0,"100")

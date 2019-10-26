@@ -127,8 +127,8 @@ class Controller():
             phonebook = PhonebookType.ALL
         elif choice == "TWO WORLDS":
             phonebook = PhonebookType.TWO_WORLDS
-        elif choice == "RANDOM GRAPH":
-            phonebook = PhonebookType.RAND_GRAPH
+        elif choice == "PARTIAL GRAPH":
+            phonebook = PhonebookType.PARTIAL_GRAPH
         elif choice == "CUSTOM GRAPH":
             phonebook = PhonebookType.CUSTOM_GRAPH
             raw_graph_string = self.view.parampanel.retrieve_input_graph()

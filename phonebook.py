@@ -11,7 +11,7 @@ TYPES:
 class PhonebookType(Enum):
     ALL         = 1     # Everyone is in the phonebook
     TWO_WORLDS  = 2 
-    RAND_GRAPH  = 3
+    PARTIAL_GRAPH  = 3
     CUSTOM_GRAPH = 4
 """
 Generate a phonebook based on the given phonebook type.
@@ -55,9 +55,9 @@ def generate_phonebook (phonebook_type, amount_agents, connectivity):
         phonebook[connected_agent_one].append(connected_agent_two)
         phonebook[connected_agent_two].append(connected_agent_one)        
 
-    if phonebook_type == PhonebookType.RAND_GRAPH:
-        #generate a random graph first
-        G = generate_random_graph(amount_agents, connectivity/100.0)
+    if phonebook_type == PhonebookType.PARTIAL_GRAPH:
+        #generate a partial graph first
+        G = generate_partial_graph(amount_agents, connectivity/100.0)
         #make a phonebook out of the graph as we know a phonebook, a list with lists
         nodes = list(G.nodes)
         for agnt_idx in range(amount_agents):
@@ -81,7 +81,7 @@ def generate_phonebook (phonebook_type, amount_agents, connectivity):
 """
 Returns a Graph object based on the amount of agents(nodes) and connectivity fraction in percents.
 """
-def generate_random_graph(amount_agents=10, connectivity=1.0):
+def generate_partial_graph(amount_agents=10, connectivity=1.0):
     #calculate theoretical connectivity, when fully connected.
     theory_connections = amount_agents * (amount_agents - 1) / 2
     #how many connections still need to be added to reach the desired connectivity.
