@@ -190,11 +190,13 @@ class Model:
             if (target_agent == receiver):
                 continue
             elif (self.agent_has_information(sender, target_agent)):
+                secret_knowledge = self.get_secret_value(sender, target_agent)
                 if (random.randint(0, 99) < self.transfer_chance):
-                    secret_knowledge = self.get_secret_value(sender, target_agent)
                     self.secrets[receiver][target_agent][secret_knowledge] += float(self.secrets[sender][target_agent][secret_knowledge])/sum(self.secrets[sender][target_agent])
                 else:
                     random_knowledge = random.choice(self.possible_secrets)
+                    while (random_knowledge == secret_knowledge):
+                        random_knowledge = random.choice(self.possible_secrets)
                     if self.behavior == Behavior.LIE:
                         self.secrets[receiver][target_agent][random_knowledge] += self.lie_factor
                     elif self.behavior == Behavior.MISTAKE:
