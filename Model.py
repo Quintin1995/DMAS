@@ -121,6 +121,7 @@ class Model:
         self.initialize_phonebook()
         self.initialize_phonebook_calls()
 
+
     """
     Does one more iteration of the gossip model making a call between two agents,
     according to each agents' phonebook, and the rules of the protocol.
@@ -337,7 +338,7 @@ class Model:
         self.calls_made = 0
         self.secrets = list ()
         self.initialize_secrets()
-        self.reset_phonebook() # also sets connectivity back to 100%
+        self.reset_phonebook(self.phonebook_connectivity) # also sets connectivity back to 100%
         self.state              = State.RUN
         self.conv_phonebook     = convert_phonebook_to_tuples(self.phonebook)
         self.graph              = nx.Graph()
