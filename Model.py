@@ -14,6 +14,7 @@ class State(Enum):
     RUN         = 1
     DONE        = 2
     NO_CALLS    = 3
+    NO_INFO     = 4
 
 class Behavior(Enum):
     LIE         = 1
@@ -45,6 +46,7 @@ class Model:
         self.summed_knowledge   = list()
         self.behavior           = behavior
         self.exchange_phonebooks = exchange_phonebooks # transfer phonenumbers during exchange of secrets
+        self.old_secrets = np.zeros((self.amount_agents, self.amount_agents))
 
     """
     Initializes the global list of secrets.
@@ -283,10 +285,27 @@ class Model:
     'Main' function of the model, runs given amount of iterations.
     """
     def do_iterations (self, iterations):
+        new_secrets = np.zeros((self.amount_agents, self.amount_agents))
+        no_new_info_count = 0
         for iteration in range (iterations):
+            if self.state == State.NO_INFO:
+                break
+            new_info = False
+            for i in range(self.amount_agents):
+                for j in range(self.amount_agents):
+                    new_secrets[i][j] = self.get_secret_value(i,j)
+                    if new_secrets[i][j] != self.old_secrets[i][j]:
+                        new_info = True
+            if new_info == False:
+                no_new_info_count += 1
+            else:
+                no_new_info_count = 0
+            self.old_secrets = deepcopy(new_secrets)
+            if no_new_info_count == 10:
+                self.state = State.NO_INFO
+                break
             if len(self.get_experts()) == self.amount_agents:
                 self.state = State.DONE
-                # print(self.state)
                 break
             try: 
                 self.next_call()
