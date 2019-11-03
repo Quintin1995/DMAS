@@ -137,7 +137,9 @@ def get_connectivity(amount_agents, graph):
     return emperical_connec
 
 
-
+"""
+Returns the phonebook as a list of tuples
+"""
 def convert_phonebook_to_tuples(phonebook):
     amount_agents = len(phonebook)
     conv_phonebook = list()

@@ -10,7 +10,9 @@ import time
 import tkinter as Tk
 from tkinter import scrolledtext
 
-
+"""
+Class for the frame of the GUI
+"""
 class View(Tk.Frame):
     def __init__(self, master):
         Tk.Frame.__init__(self, master)
@@ -32,7 +34,9 @@ class View(Tk.Frame):
         self.line_canvas = FigureCanvasTkAgg(self.line_fig, master=self)
         self.line_canvas.get_tk_widget().pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
 
-
+"""
+Contains information about the currently running model, including the previous calls, as well as the current state of the session.
+"""
 class LeftPanel(Tk.Frame):
     def __init__(self, master):
         Tk.Frame.__init__(self, master)
@@ -57,7 +61,9 @@ class LeftPanel(Tk.Frame):
         self.model_call_log_textarea = Tk.Text(self.group_info, height=20, width=35)
         self.model_call_log_textarea.pack(side="top", fill=Tk.BOTH)
 
-
+"""
+Panel on the bottom left side, contains UI elements for running multiple trials and collecting data.
+"""
 class Experiment_Panel(Tk.Frame):
     def __init__(self, master):
         Tk.Frame.__init__(self, master)
@@ -99,6 +105,10 @@ class Experiment_Panel(Tk.Frame):
         self.progress_bar = Tk.Label(self.exp_params_frame, text="No experiment running")
         self.progress_bar.pack(side="top", fill=Tk.BOTH)
 
+"""
+Contains the buttons for making steps in a single session.
+Do iterations / Do N iterations.
+"""
 class SidePanel(Tk.Frame):
     def __init__(self, master):
         Tk.Frame.__init__(self, master)
@@ -118,7 +128,9 @@ class SidePanel(Tk.Frame):
         self.iterXBut.pack(side="top",fill=Tk.BOTH)
 
 
-
+"""
+Contains the UI elements for the adjustable model parameters.
+"""
 class ParamPanel(Tk.Frame):
     def __init__(self, master):
         Tk.Frame.__init__(self, master)
@@ -199,6 +211,8 @@ class ParamPanel(Tk.Frame):
         self.resetButton = Tk.Button(self.group_model, text="Set model")
         self.resetButton.pack(side="top",fill=Tk.BOTH)
         
-
+    """
+    Returns a figure to be used for plotting by the controller.
+    """
     def retrieve_input_graph(self):
         return self.model_param_pnl_graph_creator_textarea.get("1.0",'end-1c')

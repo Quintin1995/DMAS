@@ -315,6 +315,9 @@ class Model:
                 self.state = State.NO_CALLS
                 break
 
+    """
+    Method for running multiple trials of a single model setting.
+    """
     def do_experiment (self, amount, max_iterations):
         results = list()
         for _ in range (amount):
@@ -345,5 +348,8 @@ class Model:
         self.graph.add_edges_from(self.conv_phonebook)
         self.summed_knowledge   = list()
 
+    """
+    Returns the last call made in the call log.
+    """
     def get_last_call(self):
         return (self.call_log[-1])
