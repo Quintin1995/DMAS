@@ -148,13 +148,6 @@ class Model:
         self.calls_made += 1
         self.summed_knowledge.append(self.get_sum_known_secrets())
 
-        ## debug
-        # print("\nCall: ",  self.calls_made)
-        # print(caller,  " called ",  receiver, "\n")
-        # print(self.phonebook_calls)
-        # print()
-        # print(self.phonebook)
-
     """
     Gets the current prediction that an agent has for the secret number of a target agent.
     E.g.: get_secret_value (1, 2) obtains what agent 1 thinks agent 2's secret is.
@@ -225,7 +218,7 @@ class Model:
         for number in self.phonebook[sender].copy():
             if self.phonebook_calls[receiver, number] == -1: # number not yet callable
                 self.phonebook_calls[receiver, number] = 0 # set number callable and not yet called
-                self.add_to_phonebook(sender, number)
+                self.add_to_phonebook(receiver, number)
 
     """
     Prints to the console, the actual secrets that agents have.
