@@ -222,7 +222,7 @@ class Model:
     Transfers phonenumbers one-way
     """
     def transfer_phonenumbers_helper(self, sender, receiver):
-        for number in self.phonebook[sender]:
+        for number in self.phonebook[sender].copy():
             if self.phonebook_calls[receiver, number] == -1: # number not yet callable
                 self.phonebook_calls[receiver, number] = 0 # set number callable and not yet called
                 self.add_to_phonebook(sender, number)

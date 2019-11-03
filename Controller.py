@@ -259,6 +259,9 @@ class Controller():
         elif self.model.state == State.NO_CALLS:
             val = "State: failed"
             col = "red"
+        elif self.model.state == State.NO_INFO:
+            val = "State: failed"
+            col = "red"
         else:
             val = "State: success"
             col = "green"
